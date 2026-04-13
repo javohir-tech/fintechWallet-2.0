@@ -5,8 +5,8 @@ from datetime import timedelta
 
 # ================== DJANGO =====================
 from django.db import models
-from django.utils import timezone
 from django.db.models import Q
+from django.utils import timezone
 from django.db import IntegrityError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import identify_hasher
@@ -53,17 +53,16 @@ class User(BaseModel, AbstractUser):
 
     def create_code(self, auth_type):
         UserConfirmation.objects.filter(user=self, is_confirmed=False).delete()
-        
+
         while True:
-            try :
+            try:
                 code = "".join([str(randint(1, 10000) % 10) for _ in range(4)])
-                UserConfirmation.objects.create(user=self, code=code, auth_type=auth_type)
+                UserConfirmation.objects.create(
+                    user=self, code=code, auth_type=auth_type
+                )
                 return code
             except IntegrityError:
                 continue
-                
-
-
 
     def check_username(self):
         temp_user = f"wallet_username_{uuid.uuid4().__str__().split("=")[-1]}"
