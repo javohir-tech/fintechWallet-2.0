@@ -1,6 +1,6 @@
+from users.models import User
 from datetime import timedelta
 from rest_framework_simplejwt.tokens import Token
-from users.models import User
 
 
 class RegistrationToken(Token):
