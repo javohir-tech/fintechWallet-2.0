@@ -80,3 +80,4 @@ class SignUpSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         data.update(instance.token())
         return data
+    
