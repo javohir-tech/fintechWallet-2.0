@@ -43,7 +43,7 @@ class Email:
             to=[data["email_to"]],
         )
 
-        if data["content_type"] == " html":
+        if data["content_type"] == "html":
             email.content_subtype = "html"
 
         EmailThread(email).start()
