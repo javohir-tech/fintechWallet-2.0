@@ -2,13 +2,14 @@
 from rest_framework import serializers
 
 # ================= MODELS =====================
-from users.models import User, AuthType
+from users.models import User, AuthType, UserConfirmation
 
 # ================= SHARED =================\
-from shared.utilits import check_user_input
+from shared.utilits import check_user_input, send_email
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """SIGNUP SERIALIZER"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +30,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         super().validate(data)
         data = self.check_auth_type(data)
         data = self.check_exists(data)
-        
+
         return data
 
     @staticmethod
@@ -63,4 +64,19 @@ class SignUpSerializer(serializers.ModelSerializer):
         user: User = User(**validated_data)
         user.save()
 
-        
+        auth_type = validated_data.get("auth_type")
+        if auth_type == AuthType.VIA_EMAIL:
+            email = validated_data.get("email")
+            code = user.create_code(auth_type)
+            send_email(email, code)
+        elif auth_type == AuthType.VIA_PHONE:
+            phone_number = validated_data.get("phone_number")
+            code = user.create_code(auth_type)
+            send_email(phone_number, code)
+
+        return user
+    
+    def to_representation(self, instance:User):
+        data = super().to_representation(instance)
+        data.update(instance.token())
+        return data

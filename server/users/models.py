@@ -65,11 +65,12 @@ class User(BaseModel, AbstractUser):
                 continue
 
     def check_username(self):
-        temp_user = f"wallet_username_{uuid.uuid4().__str__().split("=")[-1]}"
+        temp_user = f"wallet_username_{uuid.uuid4().__str__().split("-")[-1]}"
 
         while User.objects.filter(username=temp_user).exists():
             temp_user = f"{temp_user}{randint(1, 9)}"
-            self.username = temp_user
+            
+        self.username = temp_user
 
     def check_password(self):
         temp_password = f"wallet_passsword_{uuid.uuid4().__str__().split("-")[-1]}"
