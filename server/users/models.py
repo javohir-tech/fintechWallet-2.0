@@ -10,12 +10,21 @@ from django.utils import timezone
 from django.db import IntegrityError
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import identify_hasher
+from django.core.validators import FileExtensionValidator
 
-# ================= SHARED ======================
+# ================= SHARED ======================   
 from shared.models import BaseModel
 
 # ================= REST FRAMEWORK ==============
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
+
+
+def max_image_size(image):
+    max_image_mb = 2
+
+    if image.size > max_image_mb * 1024 * 1024:
+        raise ValidationError(f"Image size must be lass than {max_image_mb}")
 
 
 def is_hashed(password):
@@ -43,7 +52,14 @@ class User(BaseModel, AbstractUser):
 
     email = models.EmailField(max_length=64, unique=True, null=True)
     phone_number = models.CharField(max_length=36, unique=True, null=True)
-    avatar = models.ImageField(upload_to="users/avatar", null=True)
+    avatar = models.ImageField(
+        upload_to="users/avatar",
+        null=True,
+        validators=[
+            FileExtensionValidator(allowed_extensions=["jpeg", "png", "jpg", "webp"]),
+            max_image_size,
+        ],
+    )
     auth_type = models.CharField(
         max_length=9, choices=AuthType.choices, default=AuthType.VIA_EMAIL
     )
@@ -69,7 +85,7 @@ class User(BaseModel, AbstractUser):
 
         while User.objects.filter(username=temp_user).exists():
             temp_user = f"{temp_user}{randint(1, 9)}"
-            
+
         self.username = temp_user
 
     def check_password(self):
