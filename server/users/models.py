@@ -88,7 +88,7 @@ class User(BaseModel, AbstractUser):
 
         self.username = temp_user
 
-    def check_password(self):
+    def check_user_password(self):
         temp_password = f"wallet_passsword_{uuid.uuid4().__str__().split("-")[-1]}"
         self.password = temp_password
 
@@ -109,7 +109,7 @@ class User(BaseModel, AbstractUser):
             self.set_password(self.password)
 
     def clean(self):
-        self.check_password()
+        self.check_user_password()
         self.check_username()
         self.check_email()
         self.password_hesh()

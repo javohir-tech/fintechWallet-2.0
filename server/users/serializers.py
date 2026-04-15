@@ -1,5 +1,6 @@
 # ================== DJANGO =======================
 from django.core.validators import FileExtensionValidator
+from django.contrib.auth import authenticate
 
 # ================== REST FRAMEWORK ===============
 from rest_framework import serializers
@@ -154,7 +155,49 @@ class UploadAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "avatar", "auth_status"]
-        only_read_fields = ["id", "auth_status"]
-        
-        
-        
+        read_only_fields = ["id", "auth_status"]
+
+
+class LoginSerializer(serializers.ModelSerializer):
+
+    user_input = serializers.CharField(max_length=64, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ["id", "password", "auth_status", "username", "user_input", "avatar"]
+        read_only_fields = ["id", "auth_status", "username", "avatar"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def validate(self, data):
+        user_input = data["user_input"]
+        password = data["password"]
+
+        auth_type = check_user_input(user_input)
+
+        if auth_type == AuthType.VIA_EMAIL:
+            user: User = User.objects.filter(email=user_input).first()
+            if user is None:
+                raise serializers.ValidationError("bu email boyich auser topilmadi")
+        elif auth_type == AuthType.VIA_PHONE:
+            user: User = User.objects.filter(phone_number=user_input).first()
+            if user is None:
+                raise serializers.ValidationError(
+                    "bu telefon raqam boyicha user topilmadi"
+                )
+        else:
+            raise serializers.ValidationError(
+                "email yoki telefon raqami hato  kiritilgan"
+            )
+
+        username = user.username
+
+        temp_user = authenticate(username=username, password=password)
+
+        if temp_user is None:
+            raise serializers.ValidationError("You are not registration")
+
+        data["user"] = user
+
+        return data

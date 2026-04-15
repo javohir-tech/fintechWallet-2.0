@@ -20,6 +20,7 @@ from .serializers import (
     VerifyCodeSerializer,
     UpdateUserSerializer,
     UploadAvatarSerializer,
+    LoginSerializer,
 )
 
 # ================= MODELS ====================
@@ -164,3 +165,35 @@ class LogOutView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class LoginView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user: User = serializer.validated_data["user"]
+        user.auth_status = AuthStatus.DONE
+        user.save()
+        token = user.token()
+
+        return Response(
+            {
+                "succes": True,
+                "message": "successfully you are login",
+                "data": {
+                    "user": LoginSerializer(user).data,
+                    "token": token,
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
+        
+class ForgetPasswordView(APIView):
+    
+    def post(self , request):
+        # serializer = 
+        pass
