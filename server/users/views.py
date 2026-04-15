@@ -14,7 +14,12 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from datetime import timedelta
 
 # ==================== SERIALIZER ==================
-from .serializers import SignUpSerializer, VerifyCodeSerializer, UpdateUserSerializer
+from .serializers import (
+    SignUpSerializer,
+    VerifyCodeSerializer,
+    UpdateUserSerializer,
+    UploadAvatarSerializer,
+)
 
 # ================= MODELS ====================
 from users.models import User, UserConfirmation, AuthStatus, AuthType
@@ -118,6 +123,15 @@ class UpdateUserView(generics.UpdateAPIView):
     authentication_classes = [AuthenticationRegistration]
     permission_classes = [isRegistrationTokenPermissions, CanUpdateUserPermission]
     serializer_class = UpdateUserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class UploadAvatarView(generics.UpdateAPIView):
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = UploadAvatarSerializer
 
     def get_object(self):
         return self.request.user

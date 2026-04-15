@@ -1,11 +1,19 @@
+# ================== DJANGO =======================
+from django.core.validators import FileExtensionValidator
+
 # ================== REST FRAMEWORK ===============
 from rest_framework import serializers
 
 # ================= MODELS =====================
-from users.models import User, AuthType, UserConfirmation , AuthStatus
+from users.models import User, AuthType, UserConfirmation, AuthStatus
 
 # ================= SHARED =================
-from shared.utilits import check_user_input, send_email, check_password
+from shared.utilits import (
+    check_user_input,
+    send_email,
+    check_password,
+    validator_image_size,
+)
 
 # ================ TOKEN ===================
 from .tokens import RegistrationToken
@@ -118,17 +126,34 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         check_password(value)
 
         return value
-    
-    def update(self, instance:User, validated_data):
-        
-        for item , value in validated_data.items():
-            setattr(instance, item , value)
-        
-        instance.auth_status =  AuthStatus.DONE
+
+    def update(self, instance: User, validated_data):
+
+        for item, value in validated_data.items():
+            setattr(instance, item, value)
+
+        instance.auth_status = AuthStatus.DONE
         instance.save()
         return instance
-    
-    def to_representation(self, instance:User):
-        data =  super().to_representation(instance)
+
+    def to_representation(self, instance: User):
+        data = super().to_representation(instance)
         data.update(instance.token())
         return data
+
+
+class UploadAvatarSerializer(serializers.ModelSerializer):
+
+    avatar = serializers.ImageField(
+        validators=[
+            FileExtensionValidator(allowed_extensions=["jpeg", "jpg", "png", "webp"]),
+            validator_image_size,
+        ]
+    )
+
+    class Meta:
+        model = User
+        fields = ["id", "avatar", "auth_status"]
+        only_read_fields = ["id", "auth_status"]
+        
+        
