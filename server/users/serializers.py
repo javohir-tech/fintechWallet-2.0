@@ -157,3 +157,4 @@ class UploadAvatarSerializer(serializers.ModelSerializer):
         only_read_fields = ["id", "auth_status"]
         
         
+        

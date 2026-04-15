@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # ================ PYTHON ================
 from datetime import timedelta
@@ -135,3 +136,31 @@ class UploadAvatarView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class LogOutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            refresh = request.data["refresh_token"]
+            token = RefreshToken(refresh)
+            token.blacklist()
+            user: User = self.request.user
+            user.auth_status = AuthStatus.LOGOUT
+            user.save()
+            return Response(
+                {
+                    "success": True,
+                    "message": "successfully you are logouted",
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "error": "Invalid token or token already blacklisted.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )

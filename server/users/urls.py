@@ -6,6 +6,7 @@ from .views import (
     UpadateVerifyCodeView,
     UpdateUserView,
     UploadAvatarView,
+    LogOutView,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path("update_verify/", UpadateVerifyCodeView.as_view()),
     path("update/", UpdateUserView.as_view()),
     path("avatar/", UploadAvatarView.as_view()),
+    path("logout/", LogOutView.as_view()),
 ]
