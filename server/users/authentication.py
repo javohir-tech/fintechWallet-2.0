@@ -21,7 +21,7 @@ class AuthenticationRegistration(JWTAuthentication):
 
             user: User = User.objects.get(id=user_id)
 
-            if user.auth_status != validated_token.get("auth_stutus", None):
+            if user.auth_status != validated_token.get("auth_status", None):
                 raise AuthenticationFailed("Token yaroqsiz")
 
             return user

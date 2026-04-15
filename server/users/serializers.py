@@ -78,10 +78,21 @@ class SignUpSerializer(serializers.ModelSerializer):
             send_email(phone_number, code)
 
         return user
-    
-    def to_representation(self, instance:User):
+
+    def to_representation(self, instance: User):
         data = super().to_representation(instance)
         token = RegistrationToken.for_user(instance)
-        data['verify_token'] = str(token)
+        data["verify_token"] = str(token)
         return data
-    
+
+
+class VerifyCodeSerializer(serializers.Serializer):
+    """ Tastiqlsh kodi """
+    code = serializers.CharField(max_length=4, min_length=4)
+
+    def validate_code(self , value:str):
+        
+        if not value.isdigit():
+            raise serializers.ValidationError("code is not valid")
+        
+        return value
