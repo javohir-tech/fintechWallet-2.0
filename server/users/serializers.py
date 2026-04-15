@@ -201,3 +201,29 @@ class LoginSerializer(serializers.ModelSerializer):
         data["user"] = user
 
         return data
+
+
+class ForgetPassworrddSerializer(serializers.Serializer):
+
+    email_or_number = serializers.CharField(max_length=64, write_only=True)
+
+    def validate_email_or_number(self, value):
+
+        auth_type = check_user_input(value)
+
+        if auth_type == AuthType.VIA_EMAIL:
+            user: User = User.objects.filter(email=value).first()
+            if user is None:
+                raise serializers.ValidationError("ush bu email boyicha user topilmadi")
+            code = user.create_code(auth_type)
+            send_email(email=user.email, code=code)
+        elif auth_type == AuthType.VIA_PHONE:
+            user: User = User.objects.filter(phone_number=value).first()
+            if user is None:
+                raise serializers.ValidationError(
+                    "bu telefon raqam boyicha user topilmadi"
+                )
+            code = user.create_code(auth_type)
+            send_email(email=user.phone_number, code=code)
+
+        return value

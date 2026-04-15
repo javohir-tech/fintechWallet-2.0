@@ -8,8 +8,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 # ================ PYTHON ================
 from datetime import timedelta
@@ -21,6 +21,7 @@ from .serializers import (
     UpdateUserSerializer,
     UploadAvatarSerializer,
     LoginSerializer,
+    ForgetPassworrddSerializer,
 )
 
 # ================= MODELS ====================
@@ -191,9 +192,21 @@ class LoginView(APIView):
             },
             status=status.HTTP_200_OK,
         )
-        
+
+
 class ForgetPasswordView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = ForgetPassworrddSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(
+            {
+                "success": True,
+                "message": "Biz sizni manzilingizga tastiqlash kodini yubordik",
+            }
+        )
+        
     
-    def post(self , request):
-        # serializer = 
-        pass
