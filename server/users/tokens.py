@@ -10,10 +10,11 @@ class RegistrationToken(Token):
 
     @classmethod
     def for_user(cls, user: User):
+        # token = super().for_user(user)
         token = cls()
 
-        token["user_id"] = user.id
-        token["auth_stutus"] = user.auth_status
+        token["user_id"] = str(user.id)
+        token["auth_status"] = user.auth_status
         token["token_type"] = "registration"
         token["auth_type"] = user.auth_type
 
@@ -26,7 +27,7 @@ class RegistrationToken(Token):
 
             user_id = token.get("user_id")
 
-            user = User.objects.filter(id=user_id)
+            user = User.objects.get(id=user_id)
 
             return user
         except Exception:

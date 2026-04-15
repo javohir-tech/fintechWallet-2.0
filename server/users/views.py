@@ -21,4 +21,3 @@ class SignUpView(generics.CreateAPIView):
     """SIGNUP VIEW"""
     permission_classes = [AllowAny]
     serializer_class = SignUpSerializer
-    queryset = User.objects.all()

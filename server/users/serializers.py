@@ -4,8 +4,11 @@ from rest_framework import serializers
 # ================= MODELS =====================
 from users.models import User, AuthType, UserConfirmation
 
-# ================= SHARED =================\
+# ================= SHARED =================
 from shared.utilits import check_user_input, send_email
+
+# ================ TOKEN ===================
+from .tokens import RegistrationToken
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -78,6 +81,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance:User):
         data = super().to_representation(instance)
-        data.update(instance.token())
+        token = RegistrationToken.for_user(instance)
+        data['verify_token'] = str(token)
         return data
     
