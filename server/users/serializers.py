@@ -2,10 +2,10 @@
 from rest_framework import serializers
 
 # ================= MODELS =====================
-from users.models import User, AuthType, UserConfirmation
+from users.models import User, AuthType, UserConfirmation , AuthStatus
 
 # ================= SHARED =================
-from shared.utilits import check_user_input, send_email
+from shared.utilits import check_user_input, send_email, check_password
 
 # ================ TOKEN ===================
 from .tokens import RegistrationToken
@@ -87,12 +87,48 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class VerifyCodeSerializer(serializers.Serializer):
-    """ Tastiqlsh kodi """
+    """Tastiqlsh kodi"""
+
     code = serializers.CharField(max_length=4, min_length=4)
 
-    def validate_code(self , value:str):
-        
+    def validate_code(self, value: str):
+
         if not value.isdigit():
             raise serializers.ValidationError("code is not valid")
-        
+
         return value
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "password", "auth_status"]
+        read_only_fields = ["id", "auth_status"]
+
+    def validate_username(self, value):
+
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("this username is already exist")
+
+        return value
+
+    def validate_password(self, value):
+
+        check_password(value)
+
+        return value
+    
+    def update(self, instance:User, validated_data):
+        
+        for item , value in validated_data.items():
+            setattr(instance, item , value)
+        
+        instance.auth_status =  AuthStatus.DONE
+        instance.save()
+        return instance
+    
+    def to_representation(self, instance:User):
+        data =  super().to_representation(instance)
+        data.update(instance.token())
+        return data

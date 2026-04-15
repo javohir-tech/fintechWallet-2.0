@@ -54,15 +54,31 @@ def send_email(email: str, code: str):
         "email/verify_code.html", {"code": code, "to_email": email}
     )
 
-    Email.send_email({
-        "subject" : "Tastiqlsh Kodi", 
-        "body" : html_content, 
-        "content_type" : "html", 
-        "email_to" : email
-    })
-    
+    Email.send_email(
+        {
+            "subject": "Tastiqlsh Kodi",
+            "body": html_content,
+            "content_type": "html",
+            "email_to": email,
+        }
+    )
+
+
 def validator_image_size(image):
     max_image_mb = 2
-    
-    if image.size  > max_image_mb * 1024 * 1024:
+
+    if image.size > max_image_mb * 1024 * 1024:
         raise ValidationError(f"Image size must be lass than {max_image_mb}")
+
+
+def check_password(password):
+    password_regex = (
+        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+    )
+
+    if re.match(password_regex, password):
+        raise ValidationError(
+            "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
+        )
+        
+    

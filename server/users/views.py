@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from datetime import timedelta
 
 # ==================== SERIALIZER ==================
-from .serializers import SignUpSerializer, VerifyCodeSerializer
+from .serializers import SignUpSerializer, VerifyCodeSerializer, UpdateUserSerializer
 
 # ================= MODELS ====================
 from users.models import User, UserConfirmation, AuthStatus, AuthType
@@ -23,10 +23,17 @@ from users.models import User, UserConfirmation, AuthStatus, AuthType
 from .authentication import AuthenticationRegistration
 
 # =============== PERMISSIONS ===================
-from .permissions import isRegistrationTokenPermissions, CanVerifyCodeSendPermission
+from .permissions import (
+    isRegistrationTokenPermissions,
+    CanVerifyCodeSendPermission,
+    CanUpdateUserPermission,
+)
 
 # =============== TOKENS ======================
 from .tokens import RegistrationToken
+
+# =============== SHARED ======================
+from shared.utilits import send_email
 
 
 class SignUpView(generics.CreateAPIView):
@@ -74,3 +81,43 @@ class VerifyCodeView(APIView):
             )
 
         raise ValidationError("code is Invalid or life time has finished")
+
+
+class UpadateVerifyCodeView(APIView):
+
+    authentication_classes = [AuthenticationRegistration]
+    permission_classes = [isRegistrationTokenPermissions]
+
+    def post(self, request):
+
+        user: User = self.request.user
+
+        if UserConfirmation.objects.filter(
+            expire_time__gt=timezone.now(), user=user, is_confirmed=False
+        ).exists():
+            raise ValidationError("you are have valid token . please wait life time")
+
+        try:
+            if user.auth_type == AuthType.VIA_EMAIL:
+                email = user.email
+                code = user.create_code(AuthType.VIA_EMAIL)
+                send_email(email, code)
+            elif user.auth_status == AuthType.VIA_PHONE:
+                phone_number = user.phone_number
+                code = user.create_code(AuthType.VIA_PHONE)
+                send_email(phone_number, code)
+        except Exception as e:
+            raise ValidationError(f"nimadir error {e}")
+
+        return Response(
+            {"success": True, "message": "we are send verify code your address"}
+        )
+
+
+class UpdateUserView(generics.UpdateAPIView):
+    authentication_classes = [AuthenticationRegistration]
+    permission_classes = [isRegistrationTokenPermissions, CanUpdateUserPermission]
+    serializer_class = UpdateUserSerializer
+
+    def get_object(self):
+        return self.request.user
