@@ -1,14 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "auth",
-})
+})  
 
 const state = reactive({
   identifier: '',
-  password: '',
 })
 
-const showPassword = ref(false)
 const loading = ref(false)
 
 const isPhone = computed(() =>
@@ -27,20 +25,23 @@ const validate = (data: typeof state) => {
       errors.push({ path: 'identifier', message: "Email yoki telefon noto'g'ri" })
   }
 
-  if (!data.password)
-    errors.push({ path: 'password', message: 'Majburiy maydon' })
-  else if (data.password.length < 6)
-    errors.push({ path: 'password', message: 'Kamida 6 ta belgi' })
-
   return errors
 }
 
 async function onSubmit() {
   loading.value = true
   try {
-    // TODO: API so'rovingizni shu yerga yozing
-    // await useFetch('/api/auth/login', { method: 'POST', body: state })
-    console.log('Login:', state)
+    // TODO: Backend ga kod yuborish so'rovi
+    // await useFetch('/api/auth/send-code', {
+    //   method: 'POST',
+    //   body: { identifier: state.identifier },
+    // })
+
+    // Tasdiqlash sahifasiga o'tish
+    await navigateTo({
+      path: '/verify',
+      query: { identifier: state.identifier },
+    })
   } finally {
     loading.value = false
   }
@@ -50,14 +51,12 @@ async function onSubmit() {
 <template>
   <div class="page">
     <div class="container">
-      <!-- Heading -->
+
       <div class="heading">
-        <h1>Kirish</h1>
-        <p>Akkauntingizga xush kelibsiz</p>
+        <h1>Ro'yxatdan o'tish</h1>
         <p>Email yoki telefon raqamingizni kiriting</p>
       </div>
 
-      <!-- Form -->
       <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
 
         <UFormField name="identifier">
@@ -71,27 +70,12 @@ async function onSubmit() {
           />
         </UFormField>
 
-        <UFormField name="password">
-          <UInput
-            v-model="state.password"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="Parol"
-            leading-icon="i-lucide-lock"
-            size="lg"
-            class="field"
-            autocomplete="current-password"
-          >
-            <template #trailing>
-              <button type="button" class="eye-btn" @click="showPassword = !showPassword">
-                <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" />
-              </button>
-            </template>
-          </UInput>
-        </UFormField>
-
-        <div class="forgot">
-          <NuxtLink to="/forgot-password">Parolni unutdingizmi?</NuxtLink>
-        </div>
+        <p class="hint">
+          {{ isPhone
+            ? 'Telefon raqamingizga tasdiqlash kodi yuboriladi'
+            : 'Emailingizga tasdiqlash kodi yuboriladi'
+          }}
+        </p>
 
         <UButton
           type="submit"
@@ -100,15 +84,14 @@ async function onSubmit() {
           :loading="loading"
           class="submit-btn"
         >
-          Kirish
+          Kod yuborish
         </UButton>
 
       </UForm>
 
-      <!-- Footer -->
-      <p class="register-link">
-        Akkaunt yo'qmi?
-        <NuxtLink to="/auth/signup">Ro'yxatdan o'ting</NuxtLink>
+      <p class="login-link">
+        Akkaunt bor?
+        <NuxtLink to="/auth/login">Kirish</NuxtLink>
       </p>
 
     </div>
@@ -118,17 +101,17 @@ async function onSubmit() {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 .page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* background: #fafafa; */
   font-family: 'DM Sans', sans-serif;
 }
+/* .dark .page { background: #0a0a0a; } */
 
 .container {
   width: 100%;
@@ -136,11 +119,7 @@ async function onSubmit() {
   padding: 0 24px;
 }
 
-/* Heading */
-.heading {
-  margin-bottom: 36px;
-}
-
+.heading { margin-bottom: 36px; }
 .heading h1 {
   font-size: 22px;
   font-weight: 500;
@@ -148,11 +127,7 @@ async function onSubmit() {
   letter-spacing: -0.5px;
   margin: 0 0 6px;
 }
-
-.dark .heading h1 {
-  color: #f5f5f5;
-}
-
+.dark .heading h1 { color: #f5f5f5; }
 .heading p {
   font-size: 13px;
   color: #999;
@@ -160,80 +135,36 @@ async function onSubmit() {
   font-weight: 300;
 }
 
-/* Form */
 .form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+.field { width: 100%; }
 
-.field {
-  width: 100%;
-}
-
-/* Eye button */
-.eye-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  padding: 0 2px;
-  transition: color 0.2s;
-}
-
-.eye-btn:hover {
-  color: #555;
-}
-
-/* Forgot */
-.forgot {
-  text-align: right;
-  margin-top: -4px;
-}
-
-.forgot a {
+.hint {
   font-size: 12px;
-  color: #aaa;
-  text-decoration: none;
-  transition: color 0.2s;
+  color: #bbb;
+  margin: 0;
+  font-weight: 300;
+  line-height: 1.5;
 }
 
-.forgot a:hover {
-  color: #111;
-}
+.submit-btn { margin-top: 8px; }
 
-.dark .forgot a:hover {
-  color: #fff;
-}
-
-/* Submit */
-.submit-btn {
-  margin-top: 8px;
-}
-
-/* Register */
-.register-link {
+.login-link {
   text-align: center;
   font-size: 13px;
   color: #aaa;
   margin-top: 28px;
   font-weight: 300;
 }
-
-.register-link a {
+.login-link a {
   color: #111;
   text-decoration: none;
   font-weight: 500;
   transition: opacity 0.2s;
 }
-
-.register-link a:hover {
-  opacity: 0.6;
-}
-
-.dark .register-link a {
-  color: #f5f5f5;
-}
+.login-link a:hover { opacity: 0.6; }
+.dark .login-link a { color: #f5f5f5; }
 </style>
