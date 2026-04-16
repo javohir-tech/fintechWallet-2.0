@@ -24,5 +24,19 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
-  }
+  },
+
+  // Dark/Light mode
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    classSuffix: '',
+  },
+
+  // Django API manzili
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8000/api',
+    },
+  },
 })
