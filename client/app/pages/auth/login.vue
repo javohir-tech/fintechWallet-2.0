@@ -10,6 +10,7 @@ const state = reactive({
 
 const { loading, login } = useAuth()
 const router = useRouter()
+const toast = useToast();
 
 const showPassword = ref(false)
 // const loading = ref(false)
@@ -39,10 +40,20 @@ const validate = (data: typeof state) => {
 }
 
 async function onSubmit() {
-    const success = await login("http://localhost:8000/auth/login/", state.identifier, state.password)
+    const result = await login("http://localhost:8000/auth/login/",
+        state.identifier,
+        state.password
+    )
 
-    if (success) {
-        console.log("login")
+    console.log(result)
+
+    toast.add({
+        title: result.success ? "Muvaffaqiyat" : "Xatolik",
+        description: result.message,
+        color: result.success ? "primary" : "error"
+    })
+
+    if(result.success){
         router.push("/")
     }
 }

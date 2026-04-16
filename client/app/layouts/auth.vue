@@ -18,7 +18,7 @@ function toggleMode() {
 </script>
 
 <style scoped>
-.mode{
+.mode {
     position: fixed;
     top: 30px;
     right: 30px;

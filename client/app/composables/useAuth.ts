@@ -1,13 +1,10 @@
 import axios from "axios";
 import type { IUser } from "~/types";
 
+const loading = ref<boolean>(false);
+const data = ref<null | IUser>(null);
+
 export default function useAuth() {
-  const data = ref<null | IUser>(null);
-  const loading = ref<boolean>(false);
-  const error = ref<null | Error>(null);
-
-  const toast = useToast();
-
   async function login(apiUrl: string, identifier: string, password: string) {
     loading.value = true;
     try {
@@ -15,22 +12,29 @@ export default function useAuth() {
         user_input: identifier,
         password: password,
       });
+      console.log(response);
       data.value = response.data.data.user;
 
-      toast.add({
-        title: "Success",
-        description: "Tizimga muvaffaqiyatli kirdingiz",
-        color: "secondary",
-      });
-      
-      return true;
-    } catch (err) {
-      error.value = err as Error;
-      return false;
+      return {
+        success: response.data.success,
+        message: response.data.message,
+      };
+    } catch (err: any) {
+      console.log(err)
+      const message =
+        err.response?.data?.message ??
+        err.response?.data?.detail ??
+        err.response?.data?.non_field_errors[0] ??
+        "xatolik yuzaga keldi";
+
+      return {
+        success: false,
+        message: message,
+      };
     } finally {
       loading.value = false;
     }
   }
 
-  return { data, loading, error, login };
+  return { data, loading, login };
 }

@@ -183,7 +183,7 @@ class LoginView(APIView):
 
         return Response(
             {
-                "succes": True,
+                "success": True,
                 "message": "successfully you are login",
                 "data": {
                     "user": LoginSerializer(user).data,

@@ -55,5 +55,6 @@ function toggleMode() {
 
       </div>
     </div>
+    <!-- <NuxtLink to="/auth/login">loogin</NuxtLink> -->
   </header>
 </template>
