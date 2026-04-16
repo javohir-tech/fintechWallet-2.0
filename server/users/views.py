@@ -22,6 +22,7 @@ from .serializers import (
     UploadAvatarSerializer,
     LoginSerializer,
     ForgetPassworrddSerializer,
+    UpdatePasswordSerializer,
 )
 
 # ================= MODELS ====================
@@ -94,7 +95,7 @@ class VerifyCodeView(APIView):
 class UpadateVerifyCodeView(APIView):
 
     authentication_classes = [AuthenticationRegistration]
-    permission_classes = [isRegistrationTokenPermissions]
+    permission_classes = [isRegistrationTokenPermissions , CanVerifyCodeSendPermission]
 
     def post(self, request):
 
@@ -104,13 +105,12 @@ class UpadateVerifyCodeView(APIView):
             expire_time__gt=timezone.now(), user=user, is_confirmed=False
         ).exists():
             raise ValidationError("you are have valid token . please wait life time")
-
         try:
             if user.auth_type == AuthType.VIA_EMAIL:
                 email = user.email
                 code = user.create_code(AuthType.VIA_EMAIL)
                 send_email(email, code)
-            elif user.auth_status == AuthType.VIA_PHONE:
+            elif user.auth_type == AuthType.VIA_PHONE:
                 phone_number = user.phone_number
                 code = user.create_code(AuthType.VIA_PHONE)
                 send_email(phone_number, code)
@@ -202,11 +202,37 @@ class ForgetPasswordView(APIView):
         serializer = ForgetPassworrddSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        user: User = serializer.validated_data.get("user", None)
+
+        if user is not None:
+            token = RegistrationToken.for_user(user)
+
         return Response(
             {
                 "success": True,
                 "message": "Biz sizni manzilingizga tastiqlash kodini yubordik",
+                "token": str(token),
             }
         )
-        
-    
+
+
+class UpdatePasswordView(APIView):
+
+    authentication_classes = [AuthenticationRegistration]
+    permission_classes = [isRegistrationTokenPermissions, CanUpdateUserPermission]
+
+    def post(self, request):
+        serializer = UpdatePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user: User = self.request.user
+        password = serializer.validated_data["password"]
+        user.set_password(password)
+        user.save()
+
+        return Response(
+            {
+                "success": True,
+                "message": "Sizni parolingiz muvaffaqiyatli ozgartildi . Saytga kirishingiz mumkin",
+            }
+        )

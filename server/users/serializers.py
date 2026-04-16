@@ -207,7 +207,8 @@ class ForgetPassworrddSerializer(serializers.Serializer):
 
     email_or_number = serializers.CharField(max_length=64, write_only=True)
 
-    def validate_email_or_number(self, value):
+    def validate(self, data):
+        value = data["email_or_number"]
 
         auth_type = check_user_input(value)
 
@@ -225,5 +226,14 @@ class ForgetPassworrddSerializer(serializers.Serializer):
                 )
             code = user.create_code(auth_type)
             send_email(email=user.phone_number, code=code)
+        data["user"] = user
+        return data
+
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=8, max_length=128)
+
+    def validated_password(self, value):
+        check_password(value)
 
         return value

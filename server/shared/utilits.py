@@ -22,7 +22,7 @@ def check_user_input(email_or_number):
     elif re.match(phone_regex, email_or_number):
         return AuthType.VIA_PHONE
     else:
-        return None
+        raise ValidationError("Email or phone number is invalid")
 
 
 class EmailThread(threading.Thread):
