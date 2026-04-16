@@ -30,13 +30,13 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'system',
     fallback: 'light',
-    classSuffix: '',
+    classSuffix: '',  
   },
 
   // Django API manzili
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8000/api',
+      apiBase: 'http://localhost:8000/',
     },
   },
 })

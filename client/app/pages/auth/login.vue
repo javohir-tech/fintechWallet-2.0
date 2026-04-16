@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { FormError } from '@nuxt/ui';
+import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 
 definePageMeta({
     layout: "auth",
+    middleware: "guest"
 })
+
 
 const state = reactive({
     identifier: '',
@@ -43,7 +46,7 @@ const isPhone = computed(() =>
 
 
 async function onSubmit() {
-    const result = await login("http://localhost:8000/auth/login/",
+    const result = await login(
         state.identifier,
         state.password
     )

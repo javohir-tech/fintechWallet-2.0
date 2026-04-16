@@ -9,18 +9,18 @@ export default defineNuxtPlugin(() => {
   });
 
   api.interceptors.request.use((config) => {
-    const token = useCookie("access_token")
+    const token = useCookie("access_token", { default: () => null });
 
-    if(token.value){
-        config.headers.Authorization = `Bearer ${token.value}`
+    if (token.value) {
+      config.headers.Authorization = `Bearer ${token.value}`;
     }
 
-    return config
+    return config;
   });
 
   return {
-    provide : {
-        api
-    }
-  }
+    provide: {
+      api,
+    },
+  };
 });

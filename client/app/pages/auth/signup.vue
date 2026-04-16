@@ -1,17 +1,19 @@
 <script setup lang="ts">
 
 import type { FormError } from '@nuxt/ui';
-import axios from 'axios';
+import { authService } from '~/services/auth.services';
 definePageMeta({
   layout: "auth",
+  middleware: "guest",
 })
+
 
 const state = reactive({
   identifier: '',
 })
 
 type Schema = typeof state
-
+const toast = useToast();
 const loading = ref(false)
 
 const isPhone = computed(() =>
@@ -28,9 +30,26 @@ const validate = (state: Partial<Schema>): FormError[] => {
 async function onSubmit() {
   loading.value = true
   try {
-    const response = await axios.post("")
-  } catch (error) {
+    const { data } = await authService.register({
+      email_or_number: state.identifier
+    })
 
+    const verify_token = useCookie("verify_token")
+    verify_token.value = data.verify_token
+    toast.add({
+      title: "Muvaffaqiyat",
+      description: "Sizning manzilingizga tastiqlsh kodini yubordik", 
+      color : "primary"
+    })
+    await navigateTo("/auth/verify")
+  } catch (error: any) {
+    console.log(error.response)
+    const message = error.response?.data?.non_field_errors[0]
+    toast.add({
+      title: "Xatolik",
+      description: message, 
+      color : "error"
+    })
   }
   finally {
     loading.value = false

@@ -1,18 +1,19 @@
 import axios from "axios";
+import { authService } from "~/services/auth.services";
 import type { IUser } from "~/types";
 
 const loading = ref<boolean>(false);
 const data = ref<null | IUser>(null);
 
 export default function useAuth() {
-  async function login(apiUrl: string, identifier: string, password: string) {
+  async function login(identifier: string, password: string) {
     loading.value = true;
     try {
-      const response = await axios.post(apiUrl, {
+      const response = await authService.login({
         user_input: identifier,
         password: password,
       });
-      console.log(response);
+      // console.log(response);
       data.value = response.data.data.user;
 
       const accessToken = useCookie("access_token");

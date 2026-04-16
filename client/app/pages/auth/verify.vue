@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: false,
+  middleware: "verify"
 })
 
 const route = useRoute()
@@ -139,43 +140,22 @@ async function resend() {
 
       <!-- OTP inputs -->
       <div class="otp-wrapper" @paste="onPaste">
-        <input
-          v-for="(digit, i) in digits"
-          :key="i"
-          :ref="(el) => { if (el) inputRefs[i] = el as HTMLInputElement }"
-          :value="digit"
-          type="text"
-          inputmode="numeric"
-          maxlength="1"
-          class="otp-input"
-          :class="{ filled: digit, loading: loading }"
-          :disabled="loading"
-          @input="onInput(i, $event)"
-          @keydown="onKeydown(i, $event)"
-        />
+        <input v-for="(digit, i) in digits" :key="i" :ref="(el) => { if (el) inputRefs[i] = el as HTMLInputElement }"
+          :value="digit" type="text" inputmode="numeric" maxlength="1" class="otp-input"
+          :class="{ filled: digit, loading: loading }" :disabled="loading" @input="onInput(i, $event)"
+          @keydown="onKeydown(i, $event)" />
       </div>
 
       <!-- Submit -->
-      <UButton
-        block
-        size="lg"
-        :loading="loading"
-        :disabled="code.length < 6 || loading"
-        class="submit-btn"
-        @click="onSubmit"
-      >
+      <UButton block size="lg" :loading="loading" :disabled="code.length < 6 || loading" class="submit-btn"
+        @click="onSubmit">
         Tasdiqlash
       </UButton>
 
       <!-- Resend -->
       <div class="resend">
-        <button
-          type="button"
-          :disabled="resendCooldown > 0"
-          class="resend-btn"
-          :class="{ disabled: resendCooldown > 0 }"
-          @click="resend"
-        >
+        <button type="button" :disabled="resendCooldown > 0" class="resend-btn"
+          :class="{ disabled: resendCooldown > 0 }" @click="resend">
           {{ resendCooldown > 0 ? `Qayta yuborish (${resendCooldown}s)` : 'Qayta yuborish' }}
         </button>
       </div>
@@ -192,7 +172,9 @@ async function resend() {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 .page {
   min-height: 100vh;
@@ -202,7 +184,10 @@ async function resend() {
   background: #fafafa;
   font-family: 'DM Sans', sans-serif;
 }
-.dark .page { background: #0a0a0a; }
+
+.dark .page {
+  background: #0a0a0a;
+}
 
 .container {
   width: 100%;
@@ -210,7 +195,10 @@ async function resend() {
   padding: 0 24px;
 }
 
-.logo { margin-bottom: 40px; }
+.logo {
+  margin-bottom: 40px;
+}
+
 .logo-dot {
   display: inline-block;
   width: 10px;
@@ -218,9 +206,15 @@ async function resend() {
   border-radius: 50%;
   background: #111;
 }
-.dark .logo-dot { background: #fff; }
 
-.heading { margin-bottom: 36px; }
+.dark .logo-dot {
+  background: #fff;
+}
+
+.heading {
+  margin-bottom: 36px;
+}
+
 .heading h1 {
   font-size: 22px;
   font-weight: 500;
@@ -228,19 +222,27 @@ async function resend() {
   letter-spacing: -0.5px;
   margin: 0 0 6px;
 }
-.dark .heading h1 { color: #f5f5f5; }
+
+.dark .heading h1 {
+  color: #f5f5f5;
+}
+
 .heading p {
   font-size: 13px;
   color: #999;
   margin: 0 0 4px;
   font-weight: 300;
 }
+
 .identifier {
   font-size: 13px;
   color: #555;
   font-weight: 500;
 }
-.dark .identifier { color: #aaa; }
+
+.dark .identifier {
+  color: #aaa;
+}
 
 /* OTP */
 .otp-wrapper {
@@ -264,15 +266,20 @@ async function resend() {
   transition: border-color 0.2s;
   -moz-appearance: textfield;
 }
+
 .otp-input::-webkit-outer-spin-button,
-.otp-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
 .otp-input:focus {
   border-color: #111;
 }
+
 .otp-input.filled {
   border-color: #111;
 }
+
 .otp-input.loading {
   opacity: 0.5;
   cursor: not-allowed;
@@ -283,16 +290,23 @@ async function resend() {
   border-color: #2a2a2a;
   color: #f5f5f5;
 }
+
 .dark .otp-input:focus,
 .dark .otp-input.filled {
   border-color: #fff;
 }
 
 /* Submit */
-.submit-btn { margin-bottom: 16px; }
+.submit-btn {
+  margin-bottom: 16px;
+}
 
 /* Resend */
-.resend { text-align: center; margin-bottom: 24px; }
+.resend {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
 .resend-btn {
   background: none;
   border: none;
@@ -304,14 +318,27 @@ async function resend() {
   padding: 0;
   transition: opacity 0.2s;
 }
-.resend-btn:hover { opacity: 0.6; }
+
+.resend-btn:hover {
+  opacity: 0.6;
+}
+
 .resend-btn.disabled {
   color: #bbb;
   cursor: default;
 }
-.resend-btn.disabled:hover { opacity: 1; }
-.dark .resend-btn { color: #f5f5f5; }
-.dark .resend-btn.disabled { color: #444; }
+
+.resend-btn.disabled:hover {
+  opacity: 1;
+}
+
+.dark .resend-btn {
+  color: #f5f5f5;
+}
+
+.dark .resend-btn.disabled {
+  color: #444;
+}
 
 /* Back */
 .back-link {
@@ -319,12 +346,19 @@ async function resend() {
   font-size: 13px;
   margin: 0;
 }
+
 .back-link a {
   color: #aaa;
   text-decoration: none;
   font-weight: 300;
   transition: color 0.2s;
 }
-.back-link a:hover { color: #111; }
-.dark .back-link a:hover { color: #fff; }
+
+.back-link a:hover {
+  color: #111;
+}
+
+.dark .back-link a:hover {
+  color: #fff;
+}
 </style>
