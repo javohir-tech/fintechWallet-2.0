@@ -54,7 +54,7 @@ async function onSubmit() {
     })
 
     if(result.success){
-        router.push("/")
+       navigateTo("/")
     }
 }
 </script>

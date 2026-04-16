@@ -15,12 +15,14 @@ export default function useAuth() {
       console.log(response);
       data.value = response.data.data.user;
 
+      localStorage.setItem("access_token" , response.data.data.token.access_token)
+      localStorage.setItem("refresh_token" , response.data.data.token.refresh_token)
+
       return {
         success: response.data.success,
         message: response.data.message,
       };
     } catch (err: any) {
-      console.log(err)
       const message =
         err.response?.data?.message ??
         err.response?.data?.detail ??
