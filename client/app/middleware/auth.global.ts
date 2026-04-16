@@ -1,16 +1,18 @@
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware( (to) => {
 
   if (import.meta.server) return
 
-  const token = localStorage.getItem("access_token");
+  const token = useCookie("access_token")
   const publicPage = ["/auth/login", "/auth/signup"];
   const isPublic = publicPage.includes(to.path);
 
-  if (token && isPublic) {
+  const isLoggedIn = !!token.value
+
+  if (isLoggedIn && isPublic) {
     return navigateTo("/");
   }
 
-  if(!token && !isPublic){
+  if(!isLoggedIn && !isPublic){
     return navigateTo("/auth/login")
   }
 });

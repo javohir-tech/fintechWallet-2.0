@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui';
+
 definePageMeta({
     layout: "auth",
 })
@@ -9,35 +11,36 @@ const state = reactive({
 })
 
 const { loading, login } = useAuth()
-const router = useRouter()
 const toast = useToast();
 
 const showPassword = ref(false)
-// const loading = ref(false)
+type Schema = typeof state
+
+
+function validate(state: Partial<Schema>): FormError[] {
+    const errors = []
+    if (!state.identifier) {
+        errors.push({ name: "identifier", message: "Required" })
+    } else {
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.identifier)
+        const phoneOk = /^\+?[\d\s\-()]{7,15}$/.test(state.identifier)
+        if (!emailOk && !phoneOk) {
+            errors.push({ "name": "identifier", "message": "Email yoki telefon noto'g'ri" })
+        }
+    }
+    if (!state.password) {
+        errors.push({ name: "password", message: "Required" })
+    } else if (state.password.length < 8) {
+        errors.push({ "name": "password", "message": "Kamida 8ta belgidan iborat  bo'lishi  kerak" })
+    }
+    return errors
+}
+
 
 const isPhone = computed(() =>
     /^[+\d\s\-()]+$/.test(state.identifier) && state.identifier.length > 0
 )
 
-const validate = (data: typeof state) => {
-    const errors: { path: string; message: string }[] = []
-
-    if (!data.identifier) {
-        errors.push({ path: 'identifier', message: 'Majburiy maydon' })
-    } else {
-        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.identifier)
-        const phoneOk = /^\+?[\d\s\-()]{7,15}$/.test(data.identifier)
-        if (!emailOk && !phoneOk)
-            errors.push({ path: 'identifier', message: "Email yoki telefon noto'g'ri" })
-    }
-
-    if (!data.password)
-        errors.push({ path: 'password', message: 'Majburiy maydon' })
-    else if (data.password.length < 6)
-        errors.push({ path: 'password', message: 'Kamida 6 ta belgi' })
-
-    return errors
-}
 
 async function onSubmit() {
     const result = await login("http://localhost:8000/auth/login/",
@@ -53,8 +56,8 @@ async function onSubmit() {
         color: result.success ? "primary" : "error"
     })
 
-    if(result.success){
-       navigateTo("/")
+    if (result.success) {
+        await navigateTo("/")
     }
 }
 </script>
@@ -70,18 +73,18 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" @error="console.log">
 
-                <UFormField name="identifier">
+                <UFormField name="identifier" class="field">
                     <UInput v-model="state.identifier"
                         :placeholder="isPhone ? '+998 90 000 00 00' : 'email@example.com'"
-                        :leading-icon="isPhone ? 'i-lucide-phone' : 'i-lucide-mail'" size="lg" class="field"
+                        :leading-icon="isPhone ? 'i-lucide-phone' : 'i-lucide-mail'" size="lg" class="w-full"
                         autocomplete="username" />
                 </UFormField>
 
-                <UFormField name="password">
+                <UFormField name="password" class="field">
                     <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="Parol"
-                        leading-icon="i-lucide-lock" size="lg" class="field" autocomplete="current-password">
+                        leading-icon="i-lucide-lock" size="lg" class="w-full" autocomplete="current-password">
                         <template #trailing>
                             <button type="button" class="eye-btn" @click="showPassword = !showPassword">
                                 <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" />
@@ -162,8 +165,18 @@ async function onSubmit() {
     gap: 12px;
 }
 
+.form :deep([data-slot="error"]) {
+    display: block !important;
+}
+
 .field {
     width: 100%;
+}
+
+.error-msg {
+    font-size: 12px;
+    color: #f87171;
+    margin: 4px 0 0 2px;
 }
 
 /* Eye button */

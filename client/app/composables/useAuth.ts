@@ -15,8 +15,11 @@ export default function useAuth() {
       console.log(response);
       data.value = response.data.data.user;
 
-      localStorage.setItem("access_token" , response.data.data.token.access_token)
-      localStorage.setItem("refresh_token" , response.data.data.token.refresh_token)
+      const accessToken = useCookie("access_token");
+      const refreshToken = useCookie("refresh_token");
+
+      accessToken.value = response.data.data.token.access_token;
+      refreshToken.value = response.data.data.token.refresh_token;
 
       return {
         success: response.data.success,

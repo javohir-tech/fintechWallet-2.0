@@ -3,13 +3,13 @@ const colorMode = useColorMode()
 const appConfig = useAppConfig()
 
 const colors = [
-  { label: 'Ko\'k',     value: 'blue'   },
-  { label: 'Yashil',   value: 'green'  },
+  { label: 'Ko\'k', value: 'blue' },
+  { label: 'Yashil', value: 'green' },
   { label: 'Binafsha', value: 'violet' },
-  { label: 'Qizil',    value: 'red'    },
-  { label: 'Sariq',    value: 'amber'  },
-  { label: 'Moviy',    value: 'sky'    },
-  { label: 'Pushti',   value: 'pink'   },
+  { label: 'Qizil', value: 'red' },
+  { label: 'Sariq', value: 'amber' },
+  { label: 'Moviy', value: 'sky' },
+  { label: 'Pushti', value: 'pink' },
 ]
 
 const selectedColor = ref(appConfig.ui.colors.primary ?? 'blue')
@@ -20,6 +20,15 @@ watch(selectedColor, (color) => {
 
 function toggleMode() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+}
+
+async function logout() {
+  console.log("=")
+  const access_token = useCookie("access_token")
+  const refresh_token = useCookie("refresh_token")
+  access_token.value = null
+  refresh_token.value = null
+  await navigateTo("/auth/login", { replace: true })
 }
 </script>
 
@@ -32,26 +41,18 @@ function toggleMode() {
         FintechWallet
       </span>
 
+      <UButton variant="ghost" @click="logout">Logout</UButton>
+
       <!-- O'ng tomon -->
       <div class="flex items-center gap-3">
 
         <!-- Rang tanlash -->
-        <USelect
-          v-model="selectedColor"
-          :items="colors"
-          value-key="value"
-          label-key="label"
-          size="sm"
-        />
+        <USelect v-model="selectedColor" :items="colors" value-key="value" label-key="label" size="sm" />
 
         <!-- Dark / Light toggle -->
-        <UButton
-          :icon="colorMode.value === 'dark'
-            ? 'i-lucide-sun'
-            : 'i-lucide-moon'"
-          variant="ghost"
-          @click="toggleMode"
-        />
+        <UButton :icon="colorMode.value === 'dark'
+          ? 'i-lucide-sun'
+          : 'i-lucide-moon'" variant="ghost" @click="toggleMode" />
 
       </div>
     </div>
