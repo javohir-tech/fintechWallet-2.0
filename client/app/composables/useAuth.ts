@@ -1,3 +1,4 @@
+import { error } from "#build/ui";
 import axios from "axios";
 import { authService } from "~/services/auth.services";
 import type { IUser } from "~/types";
@@ -26,12 +27,15 @@ export default function useAuth() {
         success: response.data.success,
         message: response.data.message,
       };
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message ??
-        err.response?.data?.detail ??
-        err.response?.data?.non_field_errors[0] ??
-        "xatolik yuzaga keldi";
+    } catch (err: unknown) {
+      let message = "xatolik yuzaga keldi";
+
+      if (axios.isAxiosError(err)) {
+        message =
+          err.response?.data?.message ||
+          err.response?.data?.detail ||
+          err.response?.data?.non_field_errors[0];
+      }
 
       return {
         success: false,

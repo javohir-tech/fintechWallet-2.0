@@ -128,7 +128,7 @@ class User(BaseModel, AbstractUser):
         return self.email or self.phone_number
 
 
-EXPIRE_EMAIL = 5
+EXPIRE_EMAIL = 2
 EXPIRE_PHONE = 2
 
 
