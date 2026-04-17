@@ -13,5 +13,9 @@ export const authService = {
 
   updateVerify(){
     return useNuxtApp().$verify.post("/auth/update_verify/")
-  }
+  }, 
+
+  updateUser(data : {username : string , password : string}){
+    return useNuxtApp().$updateuser.patch("/auth/update/" , data)
+  },
 };

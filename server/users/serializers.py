@@ -114,6 +114,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "password", "auth_status"]
         read_only_fields = ["id", "auth_status"]
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validate_username(self, value):
 
@@ -139,7 +140,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: User):
         data = super().to_representation(instance)
-        data.update(instance.token())
+        data["tokens"] = instance.token()
         return data
 
 

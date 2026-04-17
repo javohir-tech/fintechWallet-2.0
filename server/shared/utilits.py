@@ -76,7 +76,7 @@ def check_password(password):
         r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
     )
 
-    if re.match(password_regex, password):
+    if not re.match(password_regex, password):
         raise ValidationError(
             "Password must be at least 8 characters, include uppercase, lowercase, number, and special character."
         )

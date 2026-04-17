@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { FormError } from '@nuxt/ui';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
+import axios from 'axios';
+import { authService } from '~/services/auth.services';
 
 definePageMeta({
     layout: "auth",
@@ -60,22 +62,36 @@ async function onSubmit() {
             password: state.password,
         }
 
-        // TODO: API chaqiruvi shu yerda bo'ladi
-        // const result = await updateUser(payload.username, payload.password)
+        const {data} = await authService.updateUser(payload)
 
+        console.log(data)
         console.log('Payload:', payload)
+
+        const access_token = useCookie("access_token")
+        const refresh_token = useCookie("refresh_token")
+
+        access_token.value = data.tokens.access_token
+        refresh_token.value = data.tokens.refresh_token
 
         toast.add({
             title: "Muvaffaqiyat",
-            description: "Ma'lumotlar yangilandi",
+            description: "Ma'lumotlar royhatdan o'tdingiz",
             color: "primary"
         })
 
         await navigateTo("/")
-    } catch (err) {
+    } catch (err :unknown) {
+        let message = "Nimadir xato ketdi"
+        if(axios.isAxiosError(err)){
+            console.log(err.response)
+            // const data = err?.response?.data
+            message = err?.response?.data?.detail
+            ?? err?.response?.data?.username?.[0]
+            ?? err?.response?.data?.password?.[0]
+        }
         toast.add({
             title: "Xatolik",
-            description: "Nimadir xato ketdi",
+            description: message,
             color: "error"
         })
     } finally {
