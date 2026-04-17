@@ -99,7 +99,6 @@ async function resend() {
   if (resendCooldown.value > 0) return
   try {
     const { data } = await authService.updateVerify()
-    // console.log(data)
     toast.add({
       title: "Muvaffaqiyatli",
       description: data.message,

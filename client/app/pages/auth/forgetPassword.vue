@@ -47,7 +47,6 @@ async function onSubmit() {
 
         const { data } = await authService.forgetPassword(payload)
 
-        console.log(data)
         const verify_token = useCookie("verify_token")
         verify_token.value = data.token
 
@@ -89,7 +88,7 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" @error="console.log">
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
 
                 <UFormField name="identifier" class="field">
                     <UInput v-model="state.identifier"

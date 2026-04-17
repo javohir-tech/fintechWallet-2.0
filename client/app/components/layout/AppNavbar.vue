@@ -23,7 +23,6 @@ function toggleMode() {
 }
 
 async function logout() {
-  console.log("=")
   const access_token = useCookie("access_token")
   const refresh_token = useCookie("refresh_token")
   access_token.value = null

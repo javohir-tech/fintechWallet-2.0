@@ -51,8 +51,6 @@ async function onSubmit() {
         state.password
     )
 
-    console.log(result)
-
     toast.add({
         title: result.success ? "Muvaffaqiyat" : "Xatolik",
         description: result.message,
@@ -76,7 +74,7 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" @error="console.log">
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" >
 
                 <UFormField name="identifier" class="field">
                     <UInput v-model="state.identifier"

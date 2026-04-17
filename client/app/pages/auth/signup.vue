@@ -54,7 +54,6 @@ async function onSubmit() {
     })
     await navigateTo({ path: "/auth/verify", query: { identifier: state.identifier, from: "signup" } })
   } catch (error: any) {
-    console.log(error.response)
     const message = error.response?.data?.non_field_errors[0]
     toast.add({
       title: "Xatolik",

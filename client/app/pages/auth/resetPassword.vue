@@ -54,10 +54,6 @@ async function onSubmit() {
 
         const {data} = await authService.passwordReset(payload)
 
-        console.log(data)
-
-        console.log('Payload:', payload)
-
         toast.add({
             title: "Muvaffaqiyat",
             description: data.message,
@@ -94,7 +90,7 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" @error="console.log">
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
 
                 <!-- Password -->
                 <UFormField name="password" class="field">

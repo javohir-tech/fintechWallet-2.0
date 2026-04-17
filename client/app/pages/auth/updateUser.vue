@@ -64,9 +64,6 @@ async function onSubmit() {
 
         const { data } = await authService.updateUser(payload)
 
-        console.log(data)
-        console.log('Payload:', payload)
-
         const access_token = useCookie("access_token")
         const refresh_token = useCookie("refresh_token")
         const verifyToken = useCookie("verify_token")
@@ -88,8 +85,6 @@ async function onSubmit() {
     } catch (err: unknown) {
         let message = "Nimadir xato ketdi"
         if (axios.isAxiosError(err)) {
-            console.log(err.response)
-            // const data = err?.response?.data
             message = err?.response?.data?.detail
                 ?? err?.response?.data?.username?.[0]
                 ?? err?.response?.data?.password?.[0]
@@ -116,7 +111,7 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" @error="console.log">
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
 
                 <!-- Username -->
                 <UFormField name="username" class="field">
