@@ -97,7 +97,7 @@ async function onSubmit() {
                 </UFormField>
 
                 <div class="forgot">
-                    <!-- <NuxtLink to="/forgot-password">Parolni unutdingizmi?</NuxtLink> -->
+                    <NuxtLink to="/auth/forgetpassword">Parolni unutdingizmi?</NuxtLink>
                 </div>
 
                 <UButton type="submit" block size="lg" :loading="loading" class="submit-btn">
