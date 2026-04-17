@@ -2,6 +2,7 @@
 import type { FormError } from '@nuxt/ui';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 import axios from 'axios';
+import { authService } from '~/services/auth.services';
 
 definePageMeta({
     layout: "auth",
@@ -41,27 +42,28 @@ async function onSubmit() {
     loading.value = true
     try {
         const payload = {
-            identifier: state.identifier,
+            email_or_number: state.identifier,
         }
 
-        // TODO: API chaqiruvi shu yerda bo'ladi
-        // const result = await forgotPassword(payload.identifier)
+        const { data } = await authService.forgetPassword(payload)
 
-        console.log('Payload:', payload)
+        console.log(data)
+        const verify_token = useCookie("verify_token")
+        verify_token.value = data.token
 
         toast.add({
             title: "Muvaffaqiyat",
-            description: "Tasdiqlash kodi yuborildi",
+            description: data.message,
             color: "primary"
         })
 
-        await navigateTo("/auth/reset-password")
+        await navigateTo({ path: "/auth/verify", query: { identifier: state.identifier , from : "forget" } })
     } catch (err: unknown) {
         let message = "Nimadir xato ketdi"
         if (axios.isAxiosError(err)) {
             message = err?.response?.data?.detail
-                ?? err?.response?.data?.email?.[0]
-                ?? err?.response?.data?.phone?.[0]
+                ?? err?.response?.data?.non_field_errors?.[0]
+                ?? err?.response?.data?.email_or_number?.[0]
                 ?? "Nimadir xato ketdi"
         }
         toast.add({

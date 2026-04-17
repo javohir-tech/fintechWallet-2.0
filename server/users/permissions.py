@@ -23,7 +23,7 @@ class CanVerifyCodeSendPermission(BasePermission):
 
         auth_status = request.auth.get("auth_status", None)
 
-        return auth_status in [AuthStatus.NEW, AuthStatus.DONE, AuthStatus.LOGOUT]
+        return auth_status in [AuthStatus.NEW, AuthStatus.DONE, AuthStatus.LOGOUT , AuthStatus.VERIFYED]
 
 
 class CanUpdateUserPermission(BasePermission):

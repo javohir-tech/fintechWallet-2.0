@@ -11,6 +11,7 @@ const route = useRoute()
 
 // Register sahifasidan kelgan identifier
 const identifier = computed(() => route.query.identifier as string || '')
+const from = route.query.from as  "forget" | "signup"
 
 const isPhone = computed(() =>
   /^[+\d\s\-()]+$/.test(identifier.value)
@@ -60,17 +61,19 @@ async function onSubmit() {
     const { data } = await authService.verify({ code: code.value })
     console.log(data)
     const update_token = useCookie("update_token")
-    // const verify_token = useCookie("verify_token")
 
     update_token.value = data.data.update_token
-    // verify_token.value = null
 
     toast.add({
       title: "Muvaffaqiyatli",
       description: data.message,
       color: "primary"
     })
-    await navigateTo("/auth/updateuser/")
+    if(from === "signup"){
+      await navigateTo("/auth/updateuser/")
+    }else if(from === 'forget'){
+      await navigateTo("/auth/resetpassword/")
+    }
   } catch (error: unknown) {
 
     let message = "Xatolik yuz berdi"

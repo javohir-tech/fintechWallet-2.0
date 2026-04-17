@@ -7,15 +7,19 @@ export const authService = {
     return useNuxtApp().$api.post("/auth/signup/", data);
   },
 
+  forgetPassword(data: { email_or_number: string }) {
+    return useNuxtApp().$api.post("/auth/forget/", data);
+  },
+
   verify(data: { code: string }) {
     return useNuxtApp().$verify.post("/auth/verify/", data);
   },
 
-  updateVerify(){
-    return useNuxtApp().$verify.post("/auth/update_verify/")
-  }, 
+  updateVerify() {
+    return useNuxtApp().$verify.post("/auth/update_verify/");
+  },
 
-  updateUser(data : {username : string , password : string}){
-    return useNuxtApp().$updateuser.patch("/auth/update/" , data)
+  updateUser(data: { username: string; password: string }) {
+    return useNuxtApp().$updateuser.patch("/auth/update/", data);
   },
 };
