@@ -162,37 +162,7 @@ async function resend() {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-.page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.container {
-  width: 100%;
-  max-width: 360px;
-  padding: 0 24px;
-}
-
-.heading {
-  margin-bottom: 36px;
-}
-
-.heading h1 {
-  font-size: 22px;
-  font-weight: 500;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin: 0 0 6px;
-}
+@import '@/assets/css/auth.css';
 
 .dark .heading h1 {
   color: #f5f5f5;
@@ -225,11 +195,6 @@ async function resend() {
 .otp_input {
   width: 100%;
   justify-content: space-evenly;
-}
-
-/* Submit */
-.submit-btn {
-  margin-bottom: 16px;
 }
 
 /* Resend */

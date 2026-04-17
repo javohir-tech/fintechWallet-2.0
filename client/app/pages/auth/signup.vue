@@ -87,7 +87,7 @@ async function onSubmit() {
 
       </UForm>
 
-      <p class="login-link">
+      <p class="footer-link">
         Akkaunt bor?
         <NuxtLink to="/auth/login">Kirish</NuxtLink>
       </p>
@@ -97,94 +97,5 @@ async function onSubmit() {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-.page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* background: #fafafa; */
-  font-family: 'DM Sans', sans-serif;
-}
-
-/* .dark .page { background: #0a0a0a; } */
-
-.container {
-  width: 100%;
-  max-width: 360px;
-  padding: 0 24px;
-}
-
-.heading {
-  margin-bottom: 36px;
-}
-
-.heading h1 {
-  font-size: 22px;
-  font-weight: 500;
-  color: #111;
-  letter-spacing: -0.5px;
-  margin: 0 0 6px;
-}
-
-.dark .heading h1 {
-  color: #f5f5f5;
-}
-
-.heading p {
-  font-size: 13px;
-  color: #999;
-  margin: 0;
-  font-weight: 300;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.field {
-  width: 100%;
-}
-
-.hint {
-  font-size: 12px;
-  color: #bbb;
-  margin: 0;
-  font-weight: 300;
-  line-height: 1.5;
-}
-
-.submit-btn {
-  margin-top: 8px;
-}
-
-.login-link {
-  text-align: center;
-  font-size: 13px;
-  color: #aaa;
-  margin-top: 28px;
-  font-weight: 300;
-}
-
-.login-link a {
-  color: #111;
-  text-decoration: none;
-  font-weight: 500;
-  transition: opacity 0.2s;
-}
-
-.login-link a:hover {
-  opacity: 0.6;
-}
-
-.dark .login-link a {
-  color: #f5f5f5;
-}
+@import '@/assets/css/auth.css';
 </style>
