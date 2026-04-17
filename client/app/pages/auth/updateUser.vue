@@ -62,14 +62,19 @@ async function onSubmit() {
             password: state.password,
         }
 
-        const {data} = await authService.updateUser(payload)
+        const { data } = await authService.updateUser(payload)
 
         console.log(data)
         console.log('Payload:', payload)
 
         const access_token = useCookie("access_token")
         const refresh_token = useCookie("refresh_token")
+        const verifyToken = useCookie("verify_token")
+        const update_token = useCookie("update_token");
 
+
+        update_token.value = null
+        verifyToken.value = null
         access_token.value = data.tokens.access_token
         refresh_token.value = data.tokens.refresh_token
 
@@ -80,14 +85,14 @@ async function onSubmit() {
         })
 
         await navigateTo("/")
-    } catch (err :unknown) {
+    } catch (err: unknown) {
         let message = "Nimadir xato ketdi"
-        if(axios.isAxiosError(err)){
+        if (axios.isAxiosError(err)) {
             console.log(err.response)
             // const data = err?.response?.data
             message = err?.response?.data?.detail
-            ?? err?.response?.data?.username?.[0]
-            ?? err?.response?.data?.password?.[0]
+                ?? err?.response?.data?.username?.[0]
+                ?? err?.response?.data?.password?.[0]
         }
         toast.add({
             title: "Xatolik",
@@ -115,27 +120,15 @@ async function onSubmit() {
 
                 <!-- Username -->
                 <UFormField name="username" class="field">
-                    <UInput
-                        v-model="state.username"
-                        placeholder="foydalanuvchi_nomi"
-                        leading-icon="i-lucide-user"
-                        size="lg"
-                        class="w-full"
-                        autocomplete="username"
-                    />
+                    <UInput v-model="state.username" placeholder="foydalanuvchi_nomi" leading-icon="i-lucide-user"
+                        size="lg" class="w-full" autocomplete="username" />
                 </UFormField>
 
                 <!-- Password -->
                 <UFormField name="password" class="field">
-                    <UInput
-                        v-model="state.password"
-                        :type="showPassword ? 'text' : 'password'"
-                        placeholder="Yangi parol"
-                        leading-icon="i-lucide-lock"
-                        size="lg"
-                        class="w-full"
-                        autocomplete="new-password"
-                    >
+                    <UInput v-model="state.password" :type="showPassword ? 'text' : 'password'"
+                        placeholder="Yangi parol" leading-icon="i-lucide-lock" size="lg" class="w-full"
+                        autocomplete="new-password">
                         <template #trailing>
                             <button type="button" class="eye-btn" @click="showPassword = !showPassword">
                                 <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" />
@@ -146,15 +139,9 @@ async function onSubmit() {
 
                 <!-- Confirm Password -->
                 <UFormField name="confirmPassword" class="field">
-                    <UInput
-                        v-model="state.confirmPassword"
-                        :type="showConfirm ? 'text' : 'password'"
-                        placeholder="Parolni tasdiqlang"
-                        leading-icon="i-lucide-lock-keyhole"
-                        size="lg"
-                        class="w-full"
-                        autocomplete="new-password"
-                    >
+                    <UInput v-model="state.confirmPassword" :type="showConfirm ? 'text' : 'password'"
+                        placeholder="Parolni tasdiqlang" leading-icon="i-lucide-lock-keyhole" size="lg" class="w-full"
+                        autocomplete="new-password">
                         <template #trailing>
                             <button type="button" class="eye-btn" @click="showConfirm = !showConfirm">
                                 <UIcon :name="showConfirm ? 'i-lucide-eye-off' : 'i-lucide-eye'" />

@@ -23,7 +23,18 @@ const isPhone = computed(() =>
 const validate = (state: Partial<Schema>): FormError[] => {
   const errors = []
 
-  if (!state.identifier) errors.push({ "name": "identifier", "message": "Required" })
+  if (!state.identifier) {
+    errors.push({ "name": "identifier", "message": "Required" })
+  } else {
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.identifier)
+    const phoneOk = /^\+?[\d\s\-()]{7,15}$/.test(state.identifier)
+
+    if (!emailOk && !phoneOk) {
+      errors.push({ "name": "identifier", "message": "Email yoki telefon noto'g'ri" })
+    }
+  }
+
+
   return errors
 }
 
@@ -38,17 +49,17 @@ async function onSubmit() {
     verify_token.value = data.verify_token
     toast.add({
       title: "Muvaffaqiyat",
-      description: "Sizning manzilingizga tastiqlsh kodini yubordik", 
-      color : "primary"
+      description: "Sizning manzilingizga tastiqlsh kodini yubordik",
+      color: "primary"
     })
-    await navigateTo("/auth/verify")
+    await navigateTo({ path: "/auth/verify",  query : {identifier : state.identifier}})
   } catch (error: any) {
     console.log(error.response)
     const message = error.response?.data?.non_field_errors[0]
     toast.add({
       title: "Xatolik",
-      description: message, 
-      color : "error"
+      description: message,
+      color: "error"
     })
   }
   finally {

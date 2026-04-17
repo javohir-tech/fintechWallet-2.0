@@ -19,6 +19,11 @@ export default function useAuth() {
 
       const accessToken = useCookie("access_token");
       const refreshToken = useCookie("refresh_token");
+      const verifyToken = useCookie("verify_token");
+      const update_token = useCookie("update_token");
+
+      update_token.value = null;
+      verifyToken.value = null;
 
       accessToken.value = response.data.data.token.access_token;
       refreshToken.value = response.data.data.token.refresh_token;
