@@ -2,6 +2,7 @@
 import type { FormError } from '@nuxt/ui';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 import axios from 'axios';
+import { authService } from '~/services/auth.services';
 
 definePageMeta({
     layout: "auth",
@@ -51,14 +52,15 @@ async function onSubmit() {
             password: state.password,
         }
 
-        // TODO: API chaqiruvi shu yerda bo'ladi
-        // const result = await resetPassword(payload.password)
+        const {data} = await authService.passwordReset(payload)
+
+        console.log(data)
 
         console.log('Payload:', payload)
 
         toast.add({
             title: "Muvaffaqiyat",
-            description: "Parol muvaffaqiyatli yangilandi",
+            description: data.message,
             color: "primary"
         })
 

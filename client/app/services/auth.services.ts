@@ -1,3 +1,5 @@
+import ForgetPassword from "~/pages/auth/forgetPassword.vue";
+
 export const authService = {
   login(data: { user_input: string; password: string }) {
     return useNuxtApp().$api.post("/auth/login/", data);
@@ -9,6 +11,10 @@ export const authService = {
 
   forgetPassword(data: { email_or_number: string }) {
     return useNuxtApp().$api.post("/auth/forget/", data);
+  },
+
+  passwordReset(data : {password : string}){
+    return useNuxtApp().$updateuser.post("/auth/password/" , data)
   },
 
   verify(data: { code: string }) {
