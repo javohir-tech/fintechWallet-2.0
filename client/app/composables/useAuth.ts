@@ -1,4 +1,4 @@
-import { error } from "#build/ui";
+// import { error } from "#build/ui";
 import axios from "axios";
 import { authService } from "~/services/auth.services";
 import type { IUser } from "~/types";
@@ -7,6 +7,7 @@ const loading = ref<boolean>(false);
 const data = ref<null | IUser>(null);
 
 export default function useAuth() {
+
   async function login(identifier: string, password: string) {
     loading.value = true;
     try {
@@ -48,6 +49,14 @@ export default function useAuth() {
       };
     } finally {
       loading.value = false;
+    }
+  }
+
+  async function logout(){
+    try {
+      
+    } catch (error) {
+      
     }
   }
 

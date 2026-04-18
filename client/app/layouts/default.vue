@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DropdownMenuItem, NavigationMenuItem } from '@nuxt/ui'
+import type { DropdownMenuItem, NavigationMenuItem, SidebarProps } from '@nuxt/ui'
 
 const open = ref(true)
 
@@ -26,7 +26,7 @@ function getItems(state: 'collapsed' | 'expanded') {
         {
             label: 'Settings',
             icon: 'i-lucide-settings',
-            to : "/settings"
+            to: "/settings"
         }
     ] satisfies NavigationMenuItem[]
 }
@@ -100,11 +100,14 @@ const userItems = computed<DropdownMenuItem[][]>(() => [
         }
     ]
 ])
+
+defineProps<Pick<SidebarProps, 'variant' | 'collapsible' | 'side'>>()
+
 </script>
 
 <template>
-    <div class="flex flex-1">
-        <USidebar v-model:open="open" collapsible="icon" rail :ui="{
+    <div class="flex flex-1 ">
+        <USidebar v-model:open="open" :side="'left'" collapsible="icon" rail :ui="{
             container: 'h-full',
             inner: 'bg-elevated/25 divide-transparent',
             body: 'py-0'
