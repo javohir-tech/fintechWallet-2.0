@@ -6,10 +6,11 @@ from .views import (
     UpadateVerifyCodeView,
     UpdateUserView,
     UploadAvatarView,
-    LogOutView, 
+    LogOutView,
     LoginView,
     ForgetPasswordView,
     UpdatePasswordView,
+    RefreshTokenView,
 )
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path("login/", LoginView.as_view()),
     path("forget/", ForgetPasswordView.as_view()),
     path("password/", UpdatePasswordView.as_view()),
+    path("refresh/", RefreshTokenView.as_view()),
 ]

@@ -1,9 +1,13 @@
 # ================== DJANGO =======================
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import authenticate
+from django.contrib.auth.models  import update_last_login
 
 # ================== REST FRAMEWORK ===============
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.serializers  import TokenRefreshSerializer
 
 # ================= MODELS =====================
 from users.models import User, AuthType, UserConfirmation, AuthStatus
@@ -251,3 +255,16 @@ class UpdatePasswordSerializer(serializers.Serializer):
         check_password(value)
 
         return value
+    
+class LoginRefreshSerializer(TokenRefreshSerializer):
+    
+    def validate(self, attrs):
+        data =  super().validate(attrs)
+        access_token_instance = AccessToken(data['access'])
+        user_id = access_token_instance["user_id"]
+        user = get_object_or_404(User , id = user_id)
+        update_last_login(None , user)
+        data['refresh'] = attrs['refresh']
+        
+        return data
+        

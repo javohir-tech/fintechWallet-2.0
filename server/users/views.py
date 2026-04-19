@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework_simplejwt.views import TokenRefreshView
 
 # ================ PYTHON ================
 from datetime import timedelta
@@ -23,6 +24,7 @@ from .serializers import (
     LoginSerializer,
     ForgetPassworrddSerializer,
     UpdatePasswordSerializer,
+    LoginRefreshSerializer
 )
 
 # ================= MODELS ====================
@@ -234,3 +236,6 @@ class UpdatePasswordView(APIView):
                 "message": "Sizni parolingiz muvaffaqiyatli ozgartildi . Saytga kirishingiz mumkin",
             }
         )
+        
+class RefreshTokenView(TokenRefreshView):
+    serializer_class = LoginRefreshSerializer
