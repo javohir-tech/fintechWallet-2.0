@@ -95,7 +95,7 @@ class VerifyCodeView(APIView):
 class UpadateVerifyCodeView(APIView):
 
     authentication_classes = [AuthenticationRegistration]
-    permission_classes = [isRegistrationTokenPermissions , CanVerifyCodeSendPermission]
+    permission_classes = [isRegistrationTokenPermissions, CanVerifyCodeSendPermission]
 
     def post(self, request):
 
@@ -185,10 +185,8 @@ class LoginView(APIView):
             {
                 "success": True,
                 "message": "successfully you are login",
-                "data": {
-                    "user": LoginSerializer(user).data,
-                    "token": token,
-                },
+                "user": LoginSerializer(user).data,
+                "token": token,
             },
             status=status.HTTP_200_OK,
         )

@@ -112,8 +112,8 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "username", "password", "auth_status"]
-        read_only_fields = ["id", "auth_status"]
+        fields = ["id", "username", "password", "auth_status" , "auth_type" , "avatar"]
+        read_only_fields = ["id", "auth_status" , "auth_type" , "avatar"]
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate_username(self, value):
@@ -140,8 +140,13 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: User):
         data = super().to_representation(instance)
-        data["tokens"] = instance.token()
-        return data
+        kwargs = {
+            "success" : True, 
+            "message" : "siz muffaqiyatli royhatdan otdingiz",
+            "user" : data, 
+            "tokens" : instance.token()
+        }
+        return kwargs
 
 
 class UploadAvatarSerializer(serializers.ModelSerializer):
