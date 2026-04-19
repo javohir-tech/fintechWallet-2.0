@@ -44,7 +44,7 @@ async function onSubmit() {
     const { data } = await authService.register({
       email_or_number: state.identifier
     })
-
+    // console.log(data)
     const verify_token = useCookie("verify_token")
     verify_token.value = data.verify_token
     toast.add({

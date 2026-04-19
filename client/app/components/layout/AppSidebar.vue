@@ -5,6 +5,8 @@ const open = ref(true)
 
 const colorMode = useColorMode()
 
+const {loading , logout} =  useAuth()
+
 function getItems(state: 'collapsed' | 'expanded') {
     return [
         {
@@ -96,7 +98,10 @@ const userItems = computed<DropdownMenuItem[][]>(() => [
         },
         {
             label: 'Log out',
-            icon: 'i-lucide-log-out'
+            icon: 'i-lucide-log-out', 
+            onSelect(){
+                logout()
+            }
         }
     ]
 ])

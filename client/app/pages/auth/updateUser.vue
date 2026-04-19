@@ -63,7 +63,7 @@ async function onSubmit() {
         }
 
         const { data } = await authService.updateUser(payload)
-
+        // console.log(data)
         const access_token = useCookie("access_token")
         const refresh_token = useCookie("refresh_token")
         const verifyToken = useCookie("verify_token")
@@ -77,7 +77,7 @@ async function onSubmit() {
 
         toast.add({
             title: "Muvaffaqiyat",
-            description: "Ma'lumotlar royhatdan o'tdingiz",
+            description: data.message,
             color: "primary"
         })
 

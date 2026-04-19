@@ -7,7 +7,6 @@ const loading = ref<boolean>(false);
 const data = ref<null | IUser>(null);
 
 export default function useAuth() {
-
   async function login(identifier: string, password: string) {
     loading.value = true;
     try {
@@ -15,8 +14,8 @@ export default function useAuth() {
         user_input: identifier,
         password: password,
       });
-      // console.log(response);
-      data.value = response.data.data.user;
+      console.log(response);
+      data.value = response.data.user;
 
       const accessToken = useCookie("access_token");
       const refreshToken = useCookie("refresh_token");
@@ -26,8 +25,8 @@ export default function useAuth() {
       update_token.value = null;
       verifyToken.value = null;
 
-      accessToken.value = response.data.data.token.access_token;
-      refreshToken.value = response.data.data.token.refresh_token;
+      accessToken.value = response.data.token.access_token;
+      refreshToken.value = response.data.token.refresh_token;
 
       return {
         success: response.data.success,
@@ -52,13 +51,28 @@ export default function useAuth() {
     }
   }
 
-  async function logout(){
+  async function logout() {
     try {
-      
-    } catch (error) {
-      
+      const refresh_token = useCookie("refresh_token");
+      const access_token = useCookie("access_token");
+      if (typeof refresh_token.value === "string") {
+        const { data } = await authService.logout({
+          refresh: refresh_token.value,
+        });
+        console.log(data);
+        refresh_token.value = null;
+        access_token.value = null;
+        navigateTo("/auth/login/");
+      }
+    } catch (error: unknown) {
+      let message = "hatolik yuzz  berdi";
+      if (axios.isAxiosError(error)) {
+        console.log(error.response);
+        message = error.response?.data?.detail || error.response?.data?.refresh;
+      }
+      return message;
     }
   }
 
-  return { data, loading, login };
+  return { data, loading, login , logout };
 }

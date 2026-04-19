@@ -13,8 +13,12 @@ export const authService = {
     return useNuxtApp().$api.post("/auth/forget/", data);
   },
 
-  passwordReset(data : {password : string}){
-    return useNuxtApp().$updateuser.post("/auth/password/" , data)
+  logout(data: { refresh: string }) {
+    return useNuxtApp().$api.post("/auth/logout/", data);
+  },
+
+  passwordReset(data: { password: string }) {
+    return useNuxtApp().$updateuser.post("/auth/password/", data);
   },
 
   verify(data: { code: string }) {
