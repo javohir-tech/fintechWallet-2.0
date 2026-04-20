@@ -175,6 +175,3 @@ class UserConfirmation(BaseModel):
                 name="unique_used_code_per_user",
             )
         ]
-
-
-# Create your models here.

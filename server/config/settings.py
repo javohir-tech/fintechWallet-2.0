@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     # apps
     "users",
     "shared",
+    "wallet",
 ]
 
 MIDDLEWARE = [
@@ -57,7 +58,7 @@ TEMPLATES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", 
+    "http://localhost:5173",
     "http://localhost:3000",  # React
 ]
 
