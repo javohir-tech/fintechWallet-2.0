@@ -13,7 +13,7 @@ export const authService = {
     return useNuxtApp().$api.post("/auth/forget/", data);
   },
 
-  logout(data: { refresh: string }) {
+  logout(data: { refresh_token: string }) {
     return useNuxtApp().$api.post("/auth/logout/", data);
   },
 

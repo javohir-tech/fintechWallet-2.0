@@ -15,8 +15,9 @@ const state = reactive({
 
 const { loading, login } = useAuth()
 const toast = useToast();
-
 const showPassword = ref(false)
+const message = useRoute().query.message
+
 type Schema = typeof state
 
 
@@ -61,6 +62,18 @@ async function onSubmit() {
         await navigateTo("/")
     }
 }
+
+onMounted(() => {
+    if (message && typeof message === "string") {
+        toast.add({
+            title: "Muvaffaqiyatli",
+            description: message,
+            color: "primary"
+        })
+    }
+})
+
+
 </script>
 
 <template>
@@ -74,7 +87,7 @@ async function onSubmit() {
             </div>
 
             <!-- Form -->
-            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit" >
+            <UForm :validate="validate" :state="state" class="form" @submit="onSubmit">
 
                 <UFormField name="identifier" class="field">
                     <UInput v-model="state.identifier"

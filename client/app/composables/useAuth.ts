@@ -57,12 +57,12 @@ export default function useAuth() {
       const access_token = useCookie("access_token");
       if (typeof refresh_token.value === "string") {
         const { data } = await authService.logout({
-          refresh: refresh_token.value,
+          refresh_token: refresh_token.value,
         });
         console.log(data);
         refresh_token.value = null;
         access_token.value = null;
-        navigateTo("/auth/login/");
+        navigateTo({ path: "/auth/login/", query: data.message });
       }
     } catch (error: unknown) {
       let message = "hatolik yuzz  berdi";
@@ -74,5 +74,5 @@ export default function useAuth() {
     }
   }
 
-  return { data, loading, login , logout };
+  return { data, loading, login, logout };
 }
