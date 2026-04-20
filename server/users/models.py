@@ -12,7 +12,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import identify_hasher
 from django.core.validators import FileExtensionValidator
 
-# ================= SHARED ======================   
+# ================= SHARED ======================
 from shared.models import BaseModel
 
 # ================= REST FRAMEWORK ==============
@@ -107,6 +107,10 @@ class User(BaseModel, AbstractUser):
     def password_hesh(self):
         if not is_hashed(self.password):
             self.set_password(self.password)
+
+    @property
+    def is_verified(self):
+        return self.auth_status == AuthStatus.DONE
 
     def clean(self):
         self.check_user_password()
