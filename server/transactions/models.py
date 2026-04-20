@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 from django.db import models
 from django.core.validators import MinValueValidator
@@ -50,8 +51,43 @@ class Transaction(BaseModel):
         null=True,
         blank=True,
     )
-    
-    
+
+    # ── Idempotency — ikki marta yechmaslik ─
+    idempotency_key = models.CharField(
+        max_length=64, unique=True, null=True, blank=True, db_index=True
+    )
+
+    debit_amount = models.DecimalField(
+        max_digits=18, decimal_places=2, null=True, blank=True
+    )
+
+    credit_amount = models.DecimalField(
+        max_digits=18, decimal_places=2, null=True, blank=True
+    )
+
+    reference = models.CharField(max_length=64, unique=True, default=uuid.uuid4)
+
+    description = models.TextField(blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        db_table = "transactions"
+        ordering = ["-created_time"]
+        indexes = [
+            models.Index(fields=["from_wallet", "-created_time"]),
+            models.Index(fields=["to_wallet", "-created_time"]),
+            models.Index(fields=["status"]),
+            models.Index(fields=["idempotency_key"]),
+        ]
+
+    def __str__(self):
+        return f"{self.txtype} | {self.amount} | {self.status}"
+
+    @property
+    def is_balanced(self):
+        if self.debit_amount and self.credit_amount:
+            return self.debit_amount + self.credit_amount == 0
+        return True
 
 
 # Create your models here.
