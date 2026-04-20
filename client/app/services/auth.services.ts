@@ -1,5 +1,3 @@
-import ForgetPassword from "~/pages/auth/forgetPassword.vue";
-
 export const authService = {
   login(data: { user_input: string; password: string }) {
     return useNuxtApp().$api.post("/auth/login/", data);

@@ -3,6 +3,8 @@ import type { FormError } from '@nuxt/ui';
 import { useToast } from '@nuxt/ui/runtime/composables/useToast.js';
 import axios from 'axios';
 import { authService } from '~/services/auth.services';
+import { useUserStore } from '~/store/useUser';
+import { normalizeUser } from '~/utils/mappers/user.mapper';
 
 definePageMeta({
     layout: "auth",
@@ -16,6 +18,8 @@ const state = reactive({
     password: '',
     confirmPassword: '',
 })
+
+const userStore = useUserStore()
 
 const toast = useToast()
 const loading = ref(false)
@@ -69,6 +73,9 @@ async function onSubmit() {
         const verifyToken = useCookie("verify_token")
         const update_token = useCookie("update_token");
 
+        const user = normalizeUser(data.user)
+
+        userStore.setUser(user)
 
         update_token.value = null
         verifyToken.value = null

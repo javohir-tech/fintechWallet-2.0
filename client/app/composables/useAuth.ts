@@ -1,12 +1,13 @@
 // import { error } from "#build/ui";
 import axios from "axios";
 import { authService } from "~/services/auth.services";
-import type { IUser } from "~/types";
-
-const loading = ref<boolean>(false);
-const data = ref<null | IUser>(null);
+import { useUserStore } from "~/store/useUser";
+import { normalizeUser } from "~/utils/mappers/user.mapper";
 
 export default function useAuth() {
+  const loading = ref<boolean>(false);
+  const userStore = useUserStore();
+
   async function login(identifier: string, password: string) {
     loading.value = true;
     try {
@@ -14,9 +15,9 @@ export default function useAuth() {
         user_input: identifier,
         password: password,
       });
-      console.log(response);
-      data.value = response.data.user;
-
+      // console.log(response);
+      const user = normalizeUser(response.data.user);
+      userStore.setUser(user);
       const accessToken = useCookie("access_token");
       const refreshToken = useCookie("refresh_token");
       const verifyToken = useCookie("verify_token");
@@ -59,10 +60,11 @@ export default function useAuth() {
         const { data } = await authService.logout({
           refresh_token: refresh_token.value,
         });
-        console.log(data);
+        // console.log(data);
         refresh_token.value = null;
         access_token.value = null;
-        navigateTo({ path: "/auth/login/", query: data.message });
+        userStore.clearUser()
+        await navigateTo({ path: "/auth/login/", query: data.message });
       }
     } catch (error: unknown) {
       let message = "hatolik yuzz  berdi";
@@ -74,5 +76,5 @@ export default function useAuth() {
     }
   }
 
-  return { data, loading, login, logout };
+  return { loading, login, logout };
 }

@@ -1,42 +1,39 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui'
-  ],
+  modules: ["@nuxt/eslint", "@nuxt/ui", "@pinia/nuxt"],
 
   devtools: {
-    enabled: true
+    enabled: true,
   },
 
-  css: ['~/assets/css/main.css'],
+  css: ["~/assets/css/main.css"],
 
   routeRules: {
-    '/': { prerender: true }
+    "/": { prerender: true },
   },
 
-  compatibilityDate: '2025-01-15',
+  compatibilityDate: "2025-01-15",
 
   eslint: {
     config: {
       stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
+        commaDangle: "never",
+        braceStyle: "1tbs",
+      },
+    },
   },
 
   // Dark/Light mode
   colorMode: {
-    preference: 'system',
-    fallback: 'light',
-    classSuffix: '',  
+    preference: "system",
+    fallback: "light",
+    classSuffix: "",
   },
 
   // Django API manzili
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8000/',
+      apiBase: "http://localhost:8000/",
     },
   },
-})
+});
