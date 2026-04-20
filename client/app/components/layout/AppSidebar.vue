@@ -5,7 +5,7 @@ const open = ref(true)
 
 const colorMode = useColorMode()
 
-const {loading , logout} =  useAuth()
+const {loading , logout} =  useAuth()   
 
 function getItems(state: 'collapsed' | 'expanded') {
     return [
