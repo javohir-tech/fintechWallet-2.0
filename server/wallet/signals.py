@@ -10,5 +10,6 @@ def create_wallet_on_verify(sender, instance: User, created, **kwargs):
     if not created and instance.is_verified:
         Wallet.objects.get_or_create(
             user=instance,
-            defaults={"curreny": "UZS"},
         )
+        
+    
