@@ -28,4 +28,17 @@ class WalletMeView(APIView):
         return Response(serializer.data)
 
 
+class WalletMeHistoryView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        user: User = self.request.user
+        wallet = user.wallet
+        serializer = WalletMeSerializer(wallet)
+        
+        return Response(serializer.data)
+
+
 # Create your views here.

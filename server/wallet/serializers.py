@@ -6,4 +6,4 @@ class WalletMeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Wallet
-        fields = ["id", "balance", "currency", "is_active"]
+        fields = ["id", "balance", "currency", "is_active" , "updated_time"]
