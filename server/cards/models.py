@@ -7,7 +7,7 @@ from random import randint
 
 class Card(BaseModel):
 
-    class CARD_TYPE(models.Choices):
+    class CARD_TYPE(models.TextChoices):
         VIRTUAL = "virtual", "Virtual karta"
         PHYSICAL = "physical", "Physical"
 

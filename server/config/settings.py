@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "shared",
     "wallet",
     "transactions",
+    "cards",
 ]
 
 MIDDLEWARE = [
