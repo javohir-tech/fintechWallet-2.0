@@ -1,25 +1,26 @@
 from django.db import models
-from wallet.models import Wallet
 from datetime import date
+from wallet.models import Wallet
 from shared.models import BaseModel
 from random import randint
 
 
 class Card(BaseModel):
 
-    class CARD_TYPE(models.TextChoices):
+    class CARD_TYPE(models.Choices):
         VIRTUAL = "virtual", "Virtual karta"
-        PHYSICAL = "physical", "Physical karta"
+        PHYSICAL = "physical", "Physical"
 
-    card_number = models.CharField(max_length=True, unique=True)
+    card_number = models.CharField(max_length=16, unique=True)
     card_holder_name = models.CharField(max_length=100)
+
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name="cards")
 
     expiry_month = models.PositiveSmallIntegerField()
     expiry_year = models.PositiveSmallIntegerField()
 
     card_type = models.CharField(
-        mex_length=8, choices=CARD_TYPE.choices, default=CARD_TYPE.virtaul
+        max_length=8, choices=CARD_TYPE.choices, default=CARD_TYPE.VIRTUAL
     )
 
     is_active = models.BooleanField(default=True)
@@ -27,6 +28,9 @@ class Card(BaseModel):
 
     class Meta:
         db_table = "cards"
+
+    def __str__(self):
+        return f"{self.masked_number} and {self.wallet.user}"
 
     @property
     def masked_number(self):
@@ -36,8 +40,8 @@ class Card(BaseModel):
     @staticmethod
     def generate_card_number() -> str:
         prefix = "8600"
-        remaining = "".join([str(randint(0, 9)) for _ in range(11)])
-        partial = prefix + remaining
+        remaning = "".join([str(randint(0, 9)) for _ in range(11)])
+        partial = prefix + remaning
         check_digit = Card._luhn_check_digit(partial)
         return partial + str(check_digit)
 
@@ -47,7 +51,6 @@ class Card(BaseModel):
         digits.reverse()
 
         total = 0
-
         for i, digit in enumerate(digits):
             if i % 2 == 0:
                 doupled = digit * 2
@@ -56,19 +59,20 @@ class Card(BaseModel):
                 total += digit
         return (10 - (total % 10)) % 10
 
-    @staticmethod
-    def create_for_wallet(cls, wallet, holder_name: str, years_valid: int = 4):
+    @classmethod
+    def create_for_wallet(cls, wallet, holder_name: str, expiry_year: int = 4):
+
         today = date.today()
 
         while True:
-            card_number = cls.generate_card_number()
-            if not cls.objects.filter(card_number=card_number).exists():
+            number = cls.generate_card_number()
+            if not cls.objects.filter(card_number=number).exists():
                 break
 
-        return cls.objects.create(
-            card_number=card_number,
+        cls.objects.create(
+            card_number=number,
             wallet=wallet,
-            card_holder_name=holder_name.upper(),
+            card_holder_name=holder_name,
+            expiry_year=today.year + expiry_year,
             expiry_month=today.month,
-            expiry_year=today.year + years_valid,
         )
