@@ -12,7 +12,7 @@ from .models import Transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework import generics
 
 # ============= SERVICES ===================
@@ -63,8 +63,26 @@ class GetAllTransactionsView(generics.ListAPIView):
         return Transaction.objects.filter(
             Q(from_wallet=wallet_id) | Q(to_wallet=wallet_id)
         )
-        
+
+
 class TransactionDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = AllTransactionsSerializer
-    queryset =  Transaction.objects.all()   
+    queryset = Transaction.objects.all()
+
+    def get_object(self):
+        pk = self.kwargs["pk"]
+        user = self.request.user
+
+        transaction = Transaction.objects.filter(id=pk).first()
+
+        if transaction is None:
+            raise ValidationError("transaksiya topilmadi")
+
+        if (
+            transaction.from_wallet.user.id != user.id
+            and transaction.to_wallet.user.id != user.id
+        ):
+            raise PermissionDenied("Bu transaksiyani ko'rish huquqingiz yo'q")
+
+        return transaction
