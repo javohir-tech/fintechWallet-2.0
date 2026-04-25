@@ -50,3 +50,9 @@ class TransactionSerializer(serializers.ModelSerializer):
         if not to_card is None :
             return CardTransactionSerializer(to_card).data
         return None
+    
+class AllTransactionsSerializer(serializers.ModelSerializer):
+    
+    class Meta : 
+        model = Transaction
+        fields = "__all__"
