@@ -37,3 +37,14 @@ class CardLookupSerializer(serializers.Serializer):
             "wallet_id": self.card_instance.wallet.id,
             "username": user.username,
         }
+
+
+class CardTransactionSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Card
+        fields = ["username", "masked_number"]
+
+    def get_username(self, obj):
+        return obj.wallet.user.username

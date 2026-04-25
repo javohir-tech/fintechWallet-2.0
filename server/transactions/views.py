@@ -40,7 +40,7 @@ class CreateTransactionView(APIView):
             raise ValidationError("user topilmadi")
 
         transaction = create_transfer(from_wallet, to_wallet, amount, idempotency_key)
-
+            
         transaction_serializer = TransactionSerializer(transaction)
 
         return Response(transaction_serializer.data)
