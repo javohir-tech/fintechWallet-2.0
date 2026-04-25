@@ -11,5 +11,29 @@ class CardSerializer(serializers.ModelSerializer):
             "card_holder_name",
             "card_type",
             "expiry_month",
-            "expiry_year"
+            "expiry_year",
         ]
+
+
+class CardLookupSerializer(serializers.Serializer):
+
+    card_number = serializers.CharField(max_length=16)
+
+    def validate_card_number(self, value):
+        try:
+            card = Card.objects.select_related("wallet__user").get(
+                card_number=value, is_active=True
+            )
+        except Card.DoesNotExist:
+            raise serializers.ValidationError("karta topilmadi")
+
+        self.card_instance = card
+        return value
+
+    def get_result(self):
+        user = self.card_instance.wallet.user
+        return {
+            "masked_number": self.card_instance.masked_number,
+            "wallet_id": self.card_instance.wallet.id,
+            "username": user.username,
+        }

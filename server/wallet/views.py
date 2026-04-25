@@ -40,5 +40,3 @@ class WalletMeHistoryView(APIView):
         
         return Response(serializer.data)
 
-
-# Create your views here.
