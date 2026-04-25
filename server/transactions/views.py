@@ -16,7 +16,7 @@ from rest_framework.exceptions import ValidationError
 from .services import create_transfer
 
 # =========== SERIALIZERS ==============
-from .serializers import CreateTransactionSerializer
+from .serializers import CreateTransactionSerializer, TransactionSerializer
 
 
 class CreateTransactionView(APIView):
@@ -31,7 +31,7 @@ class CreateTransactionView(APIView):
 
         data = seriallizer.validated_data
         from_wallet = self.request.user.wallet
-        to_wallet = Wallet.objects.get(id=data["wallet_to"])
+        to_wallet = Wallet.objects.get(id=data["wallet_id"])
 
         amount = data["amount"]
         idempotency_key = data["idempotency_key"]
@@ -39,10 +39,8 @@ class CreateTransactionView(APIView):
         if to_wallet is None:
             raise ValidationError("user topilmadi")
 
-        result = create_transfer(from_wallet, to_wallet, amount, idempotency_key)
+        transaction = create_transfer(from_wallet, to_wallet, amount, idempotency_key)
 
-        print("=" * 50)
-        print(result)
-        print("=" * 50)
+        transaction_serializer = TransactionSerializer(transaction)
 
-        return Response()
+        return Response(transaction_serializer.data)

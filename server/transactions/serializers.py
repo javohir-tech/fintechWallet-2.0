@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from wallet.models import Wallet
+from .models import Transaction
 from decimal import Decimal
 
 
@@ -11,6 +12,8 @@ class CreateTransactionSerializer(serializers.Serializer):
     def validate_wallet_id(self, value):
         if not Wallet.objects.filter(id=value).exists():
             raise serializers.ValidationError("Wallet topilmadi")
+        
+        return value
 
     def validate(self, attrs):
         request = self.context.get("request")
@@ -21,3 +24,12 @@ class CreateTransactionSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     "ozingizga transaksiya qila olmaysiz "
                 )
+
+        return attrs
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Transaction
+        fields = "__all__"

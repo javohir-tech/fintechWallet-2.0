@@ -10,7 +10,7 @@ def create_transfer(
     existing = Transaction.objects.filter(idempotency_key=idempotency_key).first()
 
     if existing:
-        return existing, False
+        return existing
 
     with db_transaction.atomic():
         wallets = Wallet.objects.select_for_update().filter(
@@ -41,4 +41,4 @@ def create_transfer(
         tx.status = Transaction.TxStatus.SUCCESS
         tx.save(update_fields=["status", "updated_time"])
 
-    return tx, True
+    return tx
