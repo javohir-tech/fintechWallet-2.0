@@ -13,7 +13,7 @@ def create_transfer(
         return existing, False
 
     with db_transaction.atomic():
-        wallets = Wallet.objects.select_for_update(
+        wallets = Wallet.objects.select_for_update().filter(
             id__in=[from_wallet.id, to_wallet.id]
         ).order_by("id")
 

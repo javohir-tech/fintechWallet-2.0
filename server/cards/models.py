@@ -28,6 +28,13 @@ class Card(BaseModel):
 
     class Meta:
         db_table = "cards"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["wallet"],
+                condition=models.Q(is_active=True),
+                name="unique_active_card_per_wallet",
+            )
+        ]
 
     def __str__(self):
         return f"{self.masked_number} and {self.wallet.user}"
@@ -61,6 +68,9 @@ class Card(BaseModel):
 
     @classmethod
     def create_for_wallet(cls, wallet, holder_name: str, expiry_year: int = 4):
+
+        if cls.objects.filter(wallet=wallet, is_active=True).exists():
+            raise ValueError("har bir user uchun faqat bitta card ochishga ruxsat")
 
         today = date.today()
 

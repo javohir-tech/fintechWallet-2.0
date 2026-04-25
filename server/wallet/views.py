@@ -13,6 +13,7 @@ from users.models import User
 
 # ================== Serializers =================
 from .serializers import WalletMeSerializer
+from cards.serializers import CardSerializer
 
 
 class WalletMeView(APIView):
@@ -20,7 +21,6 @@ class WalletMeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
         user: User = self.request.user
         wallet = user.wallet
         serializer = WalletMeSerializer(wallet)

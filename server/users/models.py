@@ -157,14 +157,14 @@ class UserConfirmation(BaseModel):
         super().save(*args, **kwargs)
 
     def check_expire(self):
-        if self.check_expire is None:
+        if self.expire_time is None:
             return True
 
         return timezone.now() > self.expire_time
 
     def can_verify(self):
 
-        if self.expire_time():
+        if self.check_expire():
             return False
         if self.is_confirmed:
             return False
