@@ -2,11 +2,12 @@ from decimal import Decimal
 
 # ================== DJANGO ===================
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 # ================ MODELS =====================
 from wallet.models import Wallet
 from .models import Transaction
+from cards.models import Card
 
 # ==================== REST FRAMEWORK =======================
 from rest_framework.views import APIView
@@ -74,7 +75,24 @@ class TransactionDetailView(generics.RetrieveAPIView):
         pk = self.kwargs["pk"]
         user = self.request.user
 
-        transaction = Transaction.objects.filter(id=pk).first()
+        transaction = (
+            Transaction.objects.select_related(
+                "from_wallet",
+                "from_wallet__user",
+                "to_wallet",
+                "to_wallet__user",
+            )
+            .prefetch_related(
+                Prefetch(
+                    "from_wallet__cards", queryset=Card.objects.filter(is_active=True)
+                ),
+                Prefetch(
+                    "to_wallet__cards", queryset=Card.objects.filter(is_active=True)
+                ),
+            )
+            .filter(id=pk)
+            .first()
+        )
 
         if transaction is None:
             raise ValidationError("transaksiya topilmadi")

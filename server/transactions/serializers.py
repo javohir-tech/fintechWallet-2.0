@@ -37,22 +37,75 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ["id", "amount", "status" , "from_user" , "to_user"]
+        fields = [
+            "id",
+            "amount",
+            "status",
+            "txtype",
+            "fee",
+            "idempotency_key",
+            "description",
+            "metadata",
+            "debit_amount",
+            "credit_amount",
+            "from_user",
+            "to_user",
+        ]
 
     def get_from_user(self, obj):
         from_card = obj.from_wallet.cards.filter(wallet=obj.from_wallet).first()
         if not from_card is None:
             return CardTransactionSerializer(from_card).data
         return None
-    
-    def get_to_user(self  , obj):
-        to_card = obj.to_wallet.cards.filter(wallet = obj.to_wallet).first()
-        if not to_card is None :
+
+    def get_to_user(self, obj):
+        to_card = obj.to_wallet.cards.filter(wallet=obj.to_wallet).first()
+        if not to_card is None:
             return CardTransactionSerializer(to_card).data
         return None
-    
+
+
 class AllTransactionsSerializer(serializers.ModelSerializer):
-    
-    class Meta : 
+    from_user = serializers.SerializerMethodField()
+    to_user = serializers.SerializerMethodField()
+    direction = serializers.SerializerMethodField()
+
+    class Meta:
         model = Transaction
-        fields = "__all__"
+        fields = [
+            "id",
+            "amount",
+            "status",
+            "txtype",
+            "fee",
+            "idempotency_key",
+            "description",
+            "metadata",
+            "debit_amount",
+            "credit_amount",
+            "from_user",
+            "to_user",
+            "direction"
+        ]
+
+    def get_from_user(self, obj):
+        from_card = obj.from_wallet.cards.all().first()
+        if not from_card is None:
+            return CardTransactionSerializer(from_card).data
+        return None
+
+    def get_to_user(self, obj):
+        to_card = obj.to_wallet.cards.all().first()
+        if not to_card is None:
+            return CardTransactionSerializer(to_card).data
+        return None
+
+    def get_direction(self, obj):
+        request = self.context.get("request")
+
+        if request and hasattr(request, "user"):
+            user = request.user
+            if user:
+                return user.id == obj.to_wallet.user.id
+            return None
+        return None
