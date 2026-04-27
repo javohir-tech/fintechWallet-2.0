@@ -1,12 +1,28 @@
 import axios, { type AxiosError } from "axios";
 import { Transactionservices } from "~/services/transaction.services";
+import type { ICard } from "~/types";
+import { readCache, writeCache } from "~/utils/cache"; 
 
-export default function useTransaction<T>() {
+export default function useTransaction<T extends ICard>() {
   const data = ref<T | null>(null);
   const loading = ref<boolean>(false);
   const error = ref<AxiosError | null>(null);
+  const cache = readCache();
 
-  async function LookCard(card_number: string){
+  function searchCache(prefix: string): ICard[] {
+  const cache = readCache();
+  if (!prefix.trim()) return Array.from(cache.values());
+  return Array.from(cache.values()).filter((card) =>
+    card.card_number.startsWith(prefix),
+  );
+}
+
+  async function LookCard(card_number: string) {
+    if (cache.has(card_number)) {
+      data.value = cache.get(card_number) as T;
+      return { success: true, message: "topildi" };
+    }
+
     loading.value = true;
     try {
       const response = await Transactionservices.lookCard({
@@ -14,7 +30,9 @@ export default function useTransaction<T>() {
       });
       data.value = response.data as T;
       console.log(response);
-
+      // ✅ Cache ga saqlash
+      cache.set(card_number, data.value);
+      writeCache(cache);
       return {
         success: true,
         message: "topildi",
@@ -36,10 +54,15 @@ export default function useTransaction<T>() {
     }
   }
 
-  function reset(){
-    data.value = null
-    error.value = null
+
+  function selectCard(card: ICard) {
+    data.value = card as T;
   }
 
-  return { data, loading, error, LookCard  , reset};
+  function reset() {
+    data.value = null;
+    error.value = null;
+  }
+
+  return { data, loading, error, LookCard, reset, searchCache , selectCard };
 }

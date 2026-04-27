@@ -59,11 +59,33 @@ class GetAllTransactionsView(generics.ListAPIView):
     serializer_class = AllTransactionsSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        wallet_id = user.wallet
-        return Transaction.objects.filter(
-            Q(from_wallet=wallet_id) | Q(to_wallet=wallet_id)
+        user   = self.request.user
+        wallet = user.wallet
+        params = self.request.query_params
+
+        qs = Transaction.objects.filter(
+            Q(from_wallet=wallet) | Q(to_wallet=wallet)
         )
+
+        # ?status=SUCCESS,PENDING
+        status = params.get("status")
+        if status:
+            qs = qs.filter(status__in=status.upper().split(","))
+
+        # ?txtype=TRANSFER
+        txtype = params.get("txtype")
+        if txtype:
+            qs = qs.filter(txtype__in=txtype.upper().split(","))
+
+        # ?direction=in  →  faqat kiruvchi
+        # ?direction=out →  faqat chiquvchi
+        direction = params.get("direction")
+        if direction == "in":
+            qs = qs.filter(to_wallet=wallet)
+        elif direction == "out":
+            qs = qs.filter(from_wallet=wallet)
+
+        return qs
 
 
 class TransactionDetailView(generics.RetrieveAPIView):

@@ -1,51 +1,42 @@
 <script setup lang="ts">
 import type { DropdownMenuItem, NavigationMenuItem, SidebarProps } from '@nuxt/ui'
+import { useUserStore } from '~/store/useUser'
+import { useSettingsStore } from '~/store/useSettings'
 
 const open = ref(true)
 
 const colorMode = useColorMode()
+const userStore = useUserStore()
+const settingsStore = useSettingsStore()
+const { t, locale } = useI18n()
+const {loading , logout} =  useAuth()
 
-const {loading , logout} =  useAuth()   
+const sidebarSide = useCookie<'left' | 'right'>('sidebar_side', { default: () => 'left' })
 
-function getItems(state: 'collapsed' | 'expanded') {
+const navItems = computed<NavigationMenuItem[]>(() => {
+    void locale.value // locale o'zgarganda computed qayta hisoblansin
     return [
-        {
-            label: 'Dashboard',
-            icon: 'i-lucide-inbox',
-            to: "/",
-            // badge: '4',
-        },
-        {
-            label: 'Transfer',
-            icon: 'i-lucide-credit-card',
-            to: "/transfer"
-        },
-        {
-            label: 'Transactions',
-            icon: 'i-lucide-square-activity',
-            to: "/transactions"
-        },
-        {
-            label: 'Settings',
-            icon: 'i-lucide-settings',
-            to: "/settings"
-        }
-    ] satisfies NavigationMenuItem[]
-}
-
-const user = ref({
-    name: 'Benjamin Canac',
-    avatar: {
-        src: 'https://github.com/benjamincanac.png',
-        alt: 'Benjamin Canac'
-    }
+        { label: t('nav.dashboard'),    icon: 'i-lucide-inbox',           to: '/' },
+        { label: t('nav.transfer'),     icon: 'i-lucide-credit-card',     to: '/transfer' },
+        { label: t('nav.transactions'), icon: 'i-lucide-square-activity', to: '/transactions' },
+        { label: t('nav.settings'),     icon: 'i-lucide-settings',        to: '/settings' },
+    ]
 })
+
+const user = computed(() => ({
+    name: userStore.user?.username ?? 'Foydalanuvchi',
+    avatar: userStore.user?.avatar
+        ? { src: userStore.user.avatar, alt: userStore.user.username }
+        : undefined,
+    label: userStore.user?.username ?? 'Foydalanuvchi',
+}))
 
 const userItems = computed<DropdownMenuItem[][]>(() => [
     [
         {
             label: 'Profile',
-            icon: 'i-lucide-user'
+            icon: 'i-lucide-user',
+            to: '/profile'
         },
         {
             label: 'Settings',
@@ -106,13 +97,13 @@ const userItems = computed<DropdownMenuItem[][]>(() => [
     ]
 ])
 
-defineProps<Pick<SidebarProps, 'variant' | 'collapsible' | 'side'>>()
+defineProps<Pick<SidebarProps, 'variant' | 'collapsible'>>()
 
 </script>
 
 <template>
-    <div class="flex flex-1 ">
-        <USidebar v-model:open="open" :side="'left'" collapsible="icon" rail :ui="{
+    <div class="flex h-screen overflow-hidden" :class="sidebarSide === 'right' ? 'flex-row-reverse' : 'flex-row'">
+        <USidebar v-model:open="open" :side="sidebarSide" collapsible="icon" rail :ui="{
             container: 'h-full',
             inner: 'bg-elevated/25 divide-transparent',
             body: 'py-0'
@@ -127,28 +118,49 @@ defineProps<Pick<SidebarProps, 'variant' | 'collapsible' | 'side'>>()
             </template>
 
             <template #default="{ state }">
-                <UNavigationMenu :key="state" :items="getItems(state)" orientation="vertical"
+                <UNavigationMenu :key="state" :items="navItems" orientation="vertical"
                     :ui="{ link: 'p-1.5 overflow-hidden' }" />
             </template>
 
             <template #footer>
                 <UDropdownMenu :items="userItems" :content="{ align: 'center', collisionPadding: 12 }"
                     :ui="{ content: 'w-(--reka-dropdown-menu-trigger-width) min-w-48' }">
-                    <UButton v-bind="user" :label="user?.name" trailing-icon="i-lucide-chevrons-up-down" color="neutral"
-                        variant="ghost" square class="w-full data-[state=open]:bg-elevated overflow-hidden" :ui="{
-                            trailingIcon: 'text-dimmed ms-auto'
-                        }" />
+                    <button
+                        class="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-elevated transition-colors overflow-hidden"
+                    >
+                        <!-- Avatar yoki initials -->
+                        <img
+                            v-if="userStore.user?.avatar"
+                            :src="userStore.user.avatar"
+                            :alt="userStore.user.username"
+                            class="w-8 h-8 rounded-full object-cover shrink-0"
+                        />
+                        <div
+                            v-else
+                            class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900
+                                   flex items-center justify-center text-primary-600 font-bold text-sm shrink-0"
+                        >
+                            {{ userStore.user?.username?.charAt(0).toUpperCase() ?? '?' }}
+                        </div>
+
+                        <!-- Ism -->
+                        <span class="flex-1 text-left text-sm font-medium truncate">
+                            {{ userStore.user?.username ?? 'Foydalanuvchi' }}
+                        </span>
+
+                        <UIcon name="i-lucide-chevrons-up-down" class="text-dimmed shrink-0 w-4 h-4" />
+                    </button>
                 </UDropdownMenu>
             </template>
         </USidebar>
 
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <div class="h-(--ui-header-height) shrink-0 flex items-center px-4 border-b border-default">
                 <UButton icon="i-lucide-panel-left" color="neutral" variant="ghost" aria-label="Toggle sidebar"
                     @click="open = !open" />
             </div>
 
-            <div class="flex-1 p-4">
+            <div class="flex-1 overflow-y-auto">
                 <slot />
             </div>
         </div>

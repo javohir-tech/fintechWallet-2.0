@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "transfer": "Transfer",
+    "transactions": "Transactions",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "color": "Primary color",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "sidebar": "Sidebar",
+    "sidebar_left": "Left",
+    "sidebar_right": "Right",
+    "language": "Language",
+    "saved": "Settings saved"
+  },
+  "profile": {
+    "title": "Profile",
+    "balance": "Balance",
+    "card": "Card",
+    "expires": "Expires",
+    "auth_type": "Login type",
+    "email": "Email",
+    "phone": "Phone",
+    "refresh": "Refresh",
+    "logout": "Log out"
+  },
+  "transfer": {
+    "title": "Money transfer",
+    "search": "Search",
+    "placeholder": "Enter card number",
+    "saved_cards": "Saved cards",
+    "recipient": "Recipient",
+    "amount": "Amount",
+    "note": "Note",
+    "note_optional": "optional",
+    "submit": "Transfer"
+  },
+  "transactions": {
+    "title": "Transaction history",
+    "empty": "No transactions yet",
+    "do_transfer": "Make a transfer",
+    "sent": "Sent",
+    "received": "Received",
+    "status": {
+      "PENDING": "Pending",
+      "SUCCESS": "Success",
+      "FAILED": "Failed",
+      "REVERSED": "Reversed"
+    },
+    "type": {
+      "TRANSFER": "Transfer",
+      "TOPUP": "Top-up",
+      "WITHDRAW": "Withdrawal"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back",
+    "download_pdf": "Download PDF",
+    "all_transactions": "All transactions",
+    "fee": "Fee",
+    "sender": "Sender",
+    "receiver": "Receiver",
+    "id": "ID"
+  }
+}

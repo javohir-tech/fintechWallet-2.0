@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Bosh sahifa",
+    "transfer": "O'tkazma",
+    "transactions": "Tranzaksiyalar",
+    "settings": "Sozlamalar",
+    "profile": "Profil"
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "appearance": "Ko'rinish",
+    "color": "Asosiy rang",
+    "theme": "Mavzu",
+    "theme_light": "Kunduzgi",
+    "theme_dark": "Tungi",
+    "theme_system": "Tizim",
+    "sidebar": "Yon panel",
+    "sidebar_left": "Chap",
+    "sidebar_right": "O'ng",
+    "language": "Til",
+    "saved": "Sozlamalar saqlandi"
+  },
+  "profile": {
+    "title": "Profil",
+    "balance": "Balans",
+    "card": "Karta",
+    "expires": "Muddati",
+    "auth_type": "Kirish turi",
+    "email": "Email",
+    "phone": "Telefon",
+    "refresh": "Yangilash",
+    "logout": "Chiqish"
+  },
+  "transfer": {
+    "title": "Pul o'tkazma",
+    "search": "Qidirish",
+    "placeholder": "Karta raqamini kiriting",
+    "saved_cards": "Saqlangan kartalar",
+    "recipient": "Qabul qiluvchi",
+    "amount": "Summa",
+    "note": "Izoh",
+    "note_optional": "ixtiyoriy",
+    "submit": "O'tkazish"
+  },
+  "transactions": {
+    "title": "O'tkazmalar tarixi",
+    "empty": "Hali o'tkazmalar yo'q",
+    "do_transfer": "O'tkazma qilish",
+    "sent": "Yuborildi",
+    "received": "Qabul qilindi",
+    "status": {
+      "PENDING": "Kutilmoqda",
+      "SUCCESS": "Bajarildi",
+      "FAILED": "Muvaffaqiyatsiz",
+      "REVERSED": "Qaytarildi"
+    },
+    "type": {
+      "TRANSFER": "O'tkazma",
+      "TOPUP": "To'ldirish",
+      "WITHDRAW": "Yechish"
+    }
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "back": "Orqaga",
+    "download_pdf": "PDF yuklab olish",
+    "all_transactions": "Barcha o'tkazmalar",
+    "fee": "Komissiya",
+    "sender": "Jo'natuvchi",
+    "receiver": "Qabul qiluvchi",
+    "id": "ID"
+  }
+}
