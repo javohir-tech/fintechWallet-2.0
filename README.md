@@ -20,13 +20,13 @@
 
 | Module | Description |
 |---|---|
-| 🔐 **Authentication** | Sign up, login, email/phone verification, password reset |
-| 💼 **Wallet** | Balance overview, card details, daily/weekly/monthly/yearly chart |
-| 💸 **Transfer** | Card number search, cached cards, quick transfer |
-| 📋 **Transactions** | Transaction history with filters (direction / status / type / search), PDF export |
-| 👤 **Profile** | User info, avatar, wallet balance |
-| ⚙️ **Settings** | Primary color (17 options), theme (light/dark/system), sidebar position, language |
-| 🌐 **i18n** | English 🇬🇧 / O'zbek 🇺🇿 / Русский 🇷🇺 |
+|  **Authentication** | Sign up, login, email/phone verification, password reset |
+|  **Wallet** | Balance overview, card details, daily/weekly/monthly/yearly chart |
+|  **Transfer** | Card number search, cached cards, quick transfer |
+|  **Transactions** | Transaction history with filters (direction / status / type / search), PDF export |
+|  **Profile** | User info, avatar, wallet balance |
+|  **Settings** | Primary color (17 options), theme (light/dark/system), sidebar position, language |
+|  **i18n** | English 🇬🇧 / O'zbek 🇺🇿 / Русский 🇷🇺 |
 
 ---
 
