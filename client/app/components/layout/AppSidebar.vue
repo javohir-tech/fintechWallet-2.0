@@ -84,7 +84,7 @@ const userItems = computed<DropdownMenuItem[][]>(() => [
         {
             label: 'GitHub',
             icon: 'i-simple-icons-github',
-            to: 'https://github.com/nuxt/ui',
+            to: 'https://github.com/javohir-tech/fintechWallet-2.0',
             target: '_blank'
         },
         {
