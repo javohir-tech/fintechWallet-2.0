@@ -33,6 +33,7 @@ class CardLookupSerializer(serializers.Serializer):
     def get_result(self):
         user = self.card_instance.wallet.user
         return {
+            "card_number" : self.card_instance.card_number,
             "masked_number": self.card_instance.masked_number,
             "wallet_id": self.card_instance.wallet.id,
             "username": user.username,
