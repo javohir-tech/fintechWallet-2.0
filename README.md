@@ -2,7 +2,7 @@
 
 # 💳 Fintech Wallet 2.0
 
-**Zamonaviy raqamli hamyon — pul o'tkazma, tranzaksiya tarixi va shaxsiy moliyaviy boshqaruv**
+**A modern digital wallet — money transfers, transaction history, and personal finance management**
 
 [![Nuxt](https://img.shields.io/badge/Nuxt-4.x-00DC82?logo=nuxt&logoColor=white)](https://nuxt.com)
 [![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django&logoColor=white)](https://www.djangoproject.com)
@@ -10,57 +10,58 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[🔗 GitHub](https://github.com/javohir-tech/fintechWallet-2.0) • [🐛 Bug report](https://github.com/javohir-tech/fintechWallet-2.0/issues)
+[🔗 GitHub](https://github.com/javohir-tech/fintechWallet-2.0) • [🐛 Bug Report](https://github.com/javohir-tech/fintechWallet-2.0/issues)
 
 </div>
 
 ---
 
-## ✨ Imkoniyatlar
+## ✨ Features
 
-| Modul | Tavsif |
+| Module | Description |
 |---|---|
-| 🔐 **Auth** | Ro'yxatdan o'tish, kirish, email/telefon orqali tasdiqlash, parol tiklash |
-| 💼 **Wallet** | Balans ko'rish, karta ma'lumotlari, kunlik/oylik/yillik statistika diagrammasi |
-| 💸 **Transfer** | Karta raqami bo'yicha qidirish, saqlangan kartalar cache, tez o'tkazma |
-| 📋 **Transactions** | O'tkazmalar tarixi, filter (yo'nalish / holat / tur / qidiruv), PDF yuklab olish |
-| 👤 **Profile** | Foydalanuvchi ma'lumotlari, avatar, balans |
-| ⚙️ **Settings** | Asosiy rang (17 ta), mavzu (light/dark/system), sidebar tomoni, til (uz/ru/en) |
-| 🌐 **i18n** | O'zbek 🇺🇿 / Русский 🇷🇺 / English 🇬🇧 |
+| 🔐 **Authentication** | Sign up, login, email/phone verification, password reset |
+| 💼 **Wallet** | Balance overview, card details, daily/weekly/monthly/yearly chart |
+| 💸 **Transfer** | Card number search, cached cards, quick transfer |
+| 📋 **Transactions** | Transaction history with filters (direction / status / type / search), PDF export |
+| 👤 **Profile** | User info, avatar, wallet balance |
+| ⚙️ **Settings** | Primary color (17 options), theme (light/dark/system), sidebar position, language |
+| 🌐 **i18n** | English 🇬🇧 / O'zbek 🇺🇿 / Русский 🇷🇺 |
 
 ---
 
-## 🏗 Arxitektura
+## 🏗 Architecture
 
 ```
 fintechWallet/
 ├── client/                 # Nuxt 4 + Vue 3 + TypeScript
 │   ├── app/
-│   │   ├── pages/          # Sahifalar (transfer, transactions, profile, settings...)
-│   │   ├── components/     # UI komponentlar (BalanceCard, WalletChart, ...)
+│   │   ├── pages/          # Routes (transfer, transactions, profile, settings...)
+│   │   ├── components/     # UI components (BalanceCard, WalletChart, ...)
 │   │   ├── composables/    # useBalance, useTransaction, useAuth
-│   │   ├── store/          # Pinia (useUser, useSettings)
-│   │   ├── services/       # API chaqiruvlar
+│   │   ├── store/          # Pinia stores (useUser, useSettings)
+│   │   ├── services/       # API service layer
 │   │   ├── plugins/        # settings.client.ts
-│   │   └── locales/        # i18n (uz, ru, en) — DEPRECATED, i18n/locales/ da
-│   └── i18n/locales/       # uz.json, ru.json, en.json
+│   │   └── types/          # TypeScript interfaces
+│   └── i18n/
+│       └── locales/        # uz.json, ru.json, en.json
 │
 └── server/                 # Django 5 + Django REST Framework
-    ├── users/              # Auth, JWT, tasdiqlash
-    ├── wallet/             # Wallet, balans, statistika
-    ├── cards/              # Karta modeli
-    └── transactions/       # Tranzaksiya yaratish, ro'yxat, detail
+    ├── users/              # Auth, JWT, email/phone verification
+    ├── wallet/             # Wallet, balance, statistics
+    ├── cards/              # Card model & lookup
+    └── transactions/       # Create, list, detail
 ```
 
 ---
 
-## 🚀 Ishga tushirish
+## 🚀 Getting Started
 
-### Talablar
+### Prerequisites
 
 - Python `3.12+`
 - Node.js `20+`
-- npm / pnpm
+- npm or pnpm
 
 ---
 
@@ -69,25 +70,25 @@ fintechWallet/
 ```bash
 cd server
 
-# Virtual muhit yaratish
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate        # Linux/Mac
+source venv/bin/activate        # Linux / Mac
 venv\Scripts\activate           # Windows
 
-# Paketlarni o'rnatish
+# Install dependencies
 pip install -r requirements.txt
 
-# Ma'lumotlar bazasini tayyorlash
+# Run migrations
 python manage.py migrate
 
-# Supefoydalanuvchi yaratish (ixtiyoriy)
+# Create superuser (optional)
 python manage.py createsuperuser
 
-# Serverni ishga tushirish
+# Start server
 python manage.py runserver
 ```
 
-Server: `http://localhost:8000`
+Server runs at `http://localhost:8000`
 
 ---
 
@@ -96,71 +97,81 @@ Server: `http://localhost:8000`
 ```bash
 cd client
 
-# Paketlarni o'rnatish
+# Install dependencies
 npm install
 
-# Dev server
+# Start dev server
 npm run dev
 ```
 
-Ilova: `http://localhost:3000`
+App runs at `http://localhost:3000`
 
 ---
 
-## 🔌 API Endpointlar
+## 🔌 API Reference
 
 ### Auth — `/auth/`
-| Method | URL | Tavsif |
-|--------|-----|--------|
-| POST | `/auth/signup/` | Ro'yxatdan o'tish |
-| POST | `/auth/verify/` | Kodni tasdiqlash |
-| POST | `/auth/login/` | Kirish |
-| POST | `/auth/logout/` | Chiqish |
-| POST | `/auth/forget/` | Parol tiklash |
-| POST | `/auth/password/` | Yangi parol |
-| PATCH | `/auth/update/` | Username va parol yangilash |
-| PUT | `/auth/avatar/` | Avatar yuklash |
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/signup/` | Register a new user |
+| POST | `/auth/verify/` | Verify confirmation code |
+| POST | `/auth/login/` | Login |
+| POST | `/auth/logout/` | Logout |
+| POST | `/auth/forget/` | Request password reset |
+| POST | `/auth/password/` | Set new password |
+| PATCH | `/auth/update/` | Update username & password |
+| PUT | `/auth/avatar/` | Upload avatar |
 
 ### Wallet — `/wallet/`
-| Method | URL | Tavsif |
-|--------|-----|--------|
-| GET | `/wallet/me/` | Balans va karta ma'lumotlari |
-| GET | `/wallet/stats/?period=monthly` | Statistika (daily/weekly/monthly/yearly) |
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/wallet/me/` | Get balance & card info |
+| GET | `/wallet/stats/?period=monthly` | Statistics — `daily` / `weekly` / `monthly` / `yearly` |
 
 ### Card — `/card/`
-| Method | URL | Tavsif |
-|--------|-----|--------|
-| POST | `/card/look/` | Karta raqami bo'yicha foydalanuvchi qidirish |
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/card/look/` | Look up user by card number |
 
 ### Transactions — `/transactions/`
-| Method | URL | Tavsif |
-|--------|-----|--------|
-| POST | `/transactions/create-transfer/` | Pul o'tkazma |
-| GET | `/transactions/transactions/` | Barcha tranzaksiyalar (filter: status, txtype, direction) |
-| GET | `/transactions/transactions/<id>/` | Bitta tranzaksiya detail |
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/transactions/create-transfer/` | Create a transfer |
+| GET | `/transactions/transactions/` | List all transactions (filter: `status`, `txtype`, `direction`) |
+| GET | `/transactions/transactions/<id>/` | Transaction detail |
 
 ---
 
-## 🛠 Texnologiyalar
+## 🛠 Tech Stack
 
 **Frontend**
 - [Nuxt 4](https://nuxt.com) + [Vue 3](https://vuejs.org)
-- [Nuxt UI 4](https://ui.nuxt.com) — komponent kutubxona
+- [Nuxt UI 4](https://ui.nuxt.com) — component library
 - [Pinia](https://pinia.vuejs.org) — state management
-- [Chart.js](https://www.chartjs.org) — diagrammalar
+- [Chart.js](https://www.chartjs.org) — charts & graphs
 - [Tailwind CSS 4](https://tailwindcss.com)
-- [@nuxtjs/i18n](https://i18n.nuxtjs.org) — ko'p tillilik
+- [@nuxtjs/i18n](https://i18n.nuxtjs.org) — internationalization
 - [Axios](https://axios-http.com) — HTTP client
 
 **Backend**
 - [Django 5](https://www.djangoproject.com)
 - [Django REST Framework](https://www.django-rest-framework.org)
-- [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io) — JWT autentifikatsiya
+- [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io) — JWT authentication
 - SQLite (development) / PostgreSQL (production)
 
 ---
 
-## 👨‍💻 Muallif
+## 📸 Screenshots
+
+> Coming soon
+
+---
+
+## 👨‍💻 Author
 
 **Javohir** — [GitHub](https://github.com/javohir-tech)
 
@@ -168,6 +179,6 @@ Ilova: `http://localhost:3000`
 
 <div align="center">
 
-⭐ Loyiha yoqsa, yulduzcha qo'yishni unutmang!
+⭐ If you like this project, please consider giving it a star!
 
 </div>
